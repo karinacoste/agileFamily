@@ -1,5 +1,7 @@
 <template>
-  <div>Hola<LoginForm></LoginForm></div>
+  <div class="h-screen relative justify-center items-center flex">
+    <LoginForm></LoginForm>
+  </div>
 </template>
 
 <script>

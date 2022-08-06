@@ -1,15 +1,37 @@
 <template>
   <div>
     <form @submit.prevent="handleSubmit">
-      <h3>Login</h3>
-
-      <label for="email">Email:</label>
-      <input type="email" name="email" v-model="email" required />
-
-      <label for="email">Password:</label>
-      <input type="password" name="password" v-model="password" required />
-
-      <button>Login</button>
+      <div class="md:w-96 w-80">
+        <div class="flex justify-center items-center mb-4">
+          <img alt="Vue logo" src="../../assets/images/logo.png" />
+        </div>
+        <label class="ml-1" for="email">Email:</label>
+        <input
+          type="email"
+          name="email"
+          v-model="email"
+          required
+          class="border w-full p-2 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
+        />
+        <label class="ml-1" for="email">Password:</label>
+        <input
+          type="password"
+          name="password"
+          v-model="email"
+          required
+          class="border w-full p-2 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
+        />
+      </div>
+      <!-- <label for="email">Password:</label>
+      <input type="password" name="password" v-model="password" required /> -->
+      <div class="py-4">
+        <button
+          type="submit"
+          class="h-full w-full p-2 flex items-center justify-center rounded-md bg-primary focus:outline-none"
+        >
+          Login
+        </button>
+      </div>
     </form>
   </div>
 </template>

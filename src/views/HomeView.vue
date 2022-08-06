@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
+    <NavBar></NavBar>
+    <img alt="Vue logo" src="../assets/images/logo.png" />
     {{ points }}
   </div>
 </template>
@@ -8,10 +9,10 @@
 <script>
 // @ is an alias to /src
 import { ref } from 'vue'
-import LoginForm from '@/components/forms/LoginForm.vue'
+import NavBar from '@/components/nav/NavBar.vue'
 
 export default {
-  components: {},
+  components: { NavBar },
   setup() {
     const blogs = ref([
       { title: 'Título 1', id: 1 },
