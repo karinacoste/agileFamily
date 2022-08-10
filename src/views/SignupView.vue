@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <div class="h-screen relative justify-center items-center flex">
+    <h1>Sign Up</h1>
+    <div v-if="error">{{ error }}</div>
     <form @submit.prevent="handleSubmit">
       <div class="md:w-96 w-80">
         <p>email{{ email }}</p>
         <p>password{{ password }}</p>
         <div class="flex justify-center items-center mb-4">
-          <img alt="Vue logo" src="../../assets/images/logo.png" />
+          <img alt="Vue logo" src="@/assets/images/logo.png" />
         </div>
         <label class="ml-1" for="email">Email:</label>
         <input
@@ -40,14 +42,31 @@
 
 <script>
 import { ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import router from '@/router'
 export default {
+  components: {
+    // LoginForm,
+  },
   setup() {
     const email = ref('')
     const password = ref('')
-    const handleSubmit = () => {
-      console.log(email.value, password.value)
+    const error = ref(null)
+    const store = useStore()
+    const router = useRouter()
+    const handleSubmit = async () => {
+      try {
+        await store.dispatch('signup', {
+          email: email.value,
+          password: password.value,
+        })
+        router.push('/')
+      } catch (err) {
+        error.value = err.message
+      }
     }
-    return { handleSubmit, email, password }
+    return { handleSubmit, email, password, error }
   },
 }
 </script>
