@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import { auth } from '../firebase/config'
@@ -34,7 +34,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 })
-
+gi
 router.beforeEach((to, from, next) => {
   if (to.path === '/LoginView' && auth.currentUser) {
     next('/')
