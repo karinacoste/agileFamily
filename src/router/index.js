@@ -34,7 +34,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 })
-gi
+
 router.beforeEach((to, from, next) => {
   if (to.path === '/LoginView' && auth.currentUser) {
     next('/')
