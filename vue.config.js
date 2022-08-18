@@ -4,8 +4,5 @@
 //   publicPath: process.env.NODE_ENV === 'production' ? '/kc-project/' : '/',
 // })
 module.exports = {
-  publicPath:
-    process.env.NODE_ENV === 'production'
-      ? 'https://karinacoste.github.io/kc-project/'
-      : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/kc-project/' : '/',
 }
