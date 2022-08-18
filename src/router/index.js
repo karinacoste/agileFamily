@@ -1,15 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
+import { auth } from '../firebase/config'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'HomeView',
     component: HomeView,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
-    path: '/LoginView',
+    path: '/ExternalHomeView',
+    name: 'ExternalHomeView',
+    component: () => import('../views/ExternalHomeView.vue'),
+  },
+  {
+    path: '/LoginView/',
     name: 'LoginView',
     component: LoginView,
   },
@@ -23,6 +32,22 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.path === '/LoginView' && auth.currentUser) {
+    next('/')
+    return
+  }
+  if (
+    to.matched.some((record) => record.meta.requiresAuth) &&
+    !auth.currentUser
+  ) {
+    next('/ExternalHomeView')
+    return
+  }
+
+  next()
 })
 
 export default router

@@ -6,6 +6,11 @@ module.exports = {
     extend: {
       colors: {
         primary: '#3FA7E1',
+        primaryDark: '#3795CA',
+        primaryLight: '#6BBBE8',
+      },
+      backgroundImage: {
+        'blue-banner': "url('/src/assets/images/blueBackground.png')",
       },
     },
   },
