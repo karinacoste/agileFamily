@@ -1,5 +1,6 @@
 <template>
   <div class="m-4">
+    <!-- <p class="font-bold">showedUser {{ showedUser.email }}</p> -->
     <NavBar></NavBar>
     <h1 class="text-5xl">Estoy logueada!!!!</h1>
     <div v-for="blog in blogs" :key="blog.id">
@@ -29,7 +30,7 @@ import { useStore } from 'vuex'
 import NavBar from '../components/nav/NavBar.vue'
 
 export default {
-  components: {},
+  components: { NavBar },
 
   setup() {
     const blogs = ref([
@@ -38,11 +39,13 @@ export default {
       { title: 'Mario vs Luigi, Ultimate Showdown', id: 3 },
     ])
     const store = useStore()
-    // console.log('user', store.state.user)
+    const showedUser = ref(store.state.user)
+    console.log('user', store.state.user)
     console.log('blogs', blogs.value)
 
     return {
       blogs,
+      showedUser,
     }
   },
 }

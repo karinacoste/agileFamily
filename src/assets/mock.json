@@ -1,0 +1,25 @@
+{
+  "uid": "hFFfcgyTSpM2IlWFDQwX44JFBdq1",
+  "email": "karinacoste@yahoo.es",
+  "emailVerified": false,
+  "isAnonymous": false,
+  "providerData": [
+    {
+      "providerId": "password",
+      "uid": "karinacoste@yahoo.es",
+      "displayName": null,
+      "email": "karinacoste@yahoo.es",
+      "phoneNumber": null,
+      "photoURL": null
+    }
+  ],
+  "stsTokenManager": {
+    "refreshToken": "AOEOulYJCs5H15W39_oXAux9WEH4KIpyo9vwoOvUqhi6GpojKYHOqTiq3MAcIWMtiTQy9eoCSFD256NCnBJvKm5bL_ih2kxmXD6VGn8T2EC08Sz3_sjwi-r4OzCJ40GLlwD7dBE5R59q8dmLUXDpcMddIesDpuEbZSLm3Dcs22bhAcD1ikKGLeFd3F52WnBSMupA8G_WT_qcyGZGChIvjGCPCd7MToeUSw",
+    "accessToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImE4YmZhNzU2NDk4ZmRjNTZlNmVmODQ4YWY5NTI5ZThiZWZkZDM3NDUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20va2MtcHJvamVjdC1mNmI2ZiIsImF1ZCI6ImtjLXByb2plY3QtZjZiNmYiLCJhdXRoX3RpbWUiOjE2NjA3MzgwMTksInVzZXJfaWQiOiJoRkZmY2d5VFNwTTJJbFdGRFF3WDQ0SkZCZHExIiwic3ViIjoiaEZGZmNneVRTcE0ySWxXRkRRd1g0NEpGQmRxMSIsImlhdCI6MTY2MDg5NjI1NSwiZXhwIjoxNjYwODk5ODU1LCJlbWFpbCI6ImthcmluYWNvc3RlQHlhaG9vLmVzIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImthcmluYWNvc3RlQHlhaG9vLmVzIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.YCQ7GSeVA-_90pImwOBxYpfb8FZL40JC3Bcdl65gpnFV9Fmpmpxfl9CP_KLBHWFJrvmrBypBGokAHPgxNhJfpXm1DQJ7xKfjrMYWpJN_kb94F2Y7ziuCXExmK5_j0zwOpXdMqegRsKtpDKvaVCkDcthKF81VRAK0F_Ibgx824P45KKfJdN8NsIZRpaYGMSZe_-JxROaMFVu-ce9oYsdwvWPyL7986QU7Q5-uVf_kV30xwxRUQPH8Ch7roAmdb9HdGcIO39j4hwssh-Xe0wX1LjT13J3Q0BgnUnSbQIhOpFetOfxuT9aiTqpVae2Z-pyAcksOx_nMqc-I04jGw2omqw",
+    "expirationTime": 1660899854663
+  },
+  "createdAt": "1660304251307",
+  "lastLoginAt": "1660836884419",
+  "apiKey": "AIzaSyA7SnAdcJnEIiNaT7CR7yUAoE0abAZ84Z0",
+  "appName": "[DEFAULT]"
+}

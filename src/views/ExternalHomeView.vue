@@ -3,7 +3,6 @@
     <external-nav-bar></external-nav-bar>
 
     <text-banner> <h1 class="text-5xl">EXTERNALLLL!!!!</h1></text-banner>
-    <div v-for="blog in blogs" :key="blog.id"></div>
   </div>
 </template>
 
@@ -14,7 +13,7 @@ import { useStore } from 'vuex'
 // import NavBar from '@/components/nav/NavBar.vue'
 import TextBanner from '../components/banners/TextBanner.vue'
 import ExternalNavBar from '../components/nav/ExternalNavBar.vue'
-
+import { onBeforeMount, onBeforeUnmount, onMounted } from '@vue/runtime-core'
 export default {
   components: {
     TextBanner,
@@ -27,7 +26,7 @@ export default {
       { title: 'Mario vs Luigi, Ultimate Showdown', id: 3 },
     ])
     const store = useStore()
-    console.log('user', store.state.user)
+    console.log('userrr', store.state.user)
 
     return {
       blogs,

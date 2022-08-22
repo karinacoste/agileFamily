@@ -5,11 +5,25 @@
   </div>
 </template>
 <script>
-import NavBar from '@/components/nav/NavBar.vue'
-
+import {
+  onBeforeMount,
+  onBeforeUnmount,
+  onMounted,
+  onServerPrefetch,
+} from 'vue'
+// import NavBar from '@/components/nav/NavBar.vue'
+import { useStore } from 'vuex'
+import { auth } from '@/firebase/config'
+import { onAuthStateChanged } from 'firebase/auth'
 export default {
   // components: { NavBar },
+  setup() {
+    const store = useStore()
+    onBeforeMount(async () => {
+      store.dispatch('fetchUser')
+    })
 
-  setup() {},
+    return {}
+  },
 }
 </script>
