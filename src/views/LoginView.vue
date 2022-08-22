@@ -1,11 +1,8 @@
 <template>
   <div class="h-screen relative justify-center items-center flex">
-    <h1>LOGIN</h1>
     <div v-if="error">{{ error }}</div>
     <form @submit.prevent="handleSubmit">
       <div class="md:w-96 w-80">
-        <p>email{{ email }}</p>
-        <p>password{{ password }}</p>
         <div class="flex justify-center items-center mb-4">
           <img alt="Vue logo" src="@/assets/images/logo.png" />
         </div>
