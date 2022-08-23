@@ -26,7 +26,6 @@ export default {
       { title: 'Mario vs Luigi, Ultimate Showdown', id: 3 },
     ])
     const store = useStore()
-    console.log('userrr', store.state.user)
 
     return {
       blogs,

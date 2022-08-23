@@ -3,6 +3,8 @@
     <!-- <p class="font-bold">showedUser {{ showedUser.email }}</p> -->
     <NavBar></NavBar>
     <h1 class="text-5xl">Estoy logueada!!!!</h1>
+    <button @click="addUser">Crear user</button>
+    <button @click="showUsers">Show user</button>
     <div v-for="blog in blogs" :key="blog.id">
       <div class="blog">
         <h3>{{ blog.title }}</h3>
@@ -40,12 +42,28 @@ export default {
     ])
     const store = useStore()
     const showedUser = ref(store.state.user)
+    const addUser = async () => {
+      try {
+        store.dispatch('addAppUser')
+      } catch (e) {
+        console.error('ErrorRRRRR ', e)
+      }
+    }
+    const showUsers = async () => {
+      try {
+        store.dispatch('getAppUsers')
+      } catch (e) {
+        console.error('Error getAppUsers', e)
+      }
+    }
     console.log('user', store.state.user)
     console.log('blogs', blogs.value)
 
     return {
       blogs,
       showedUser,
+      addUser,
+      showUsers,
     }
   },
 }

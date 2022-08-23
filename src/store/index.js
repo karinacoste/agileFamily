@@ -1,7 +1,7 @@
 import { createStore, storeKey } from 'vuex'
 import { auth } from '../firebase/config'
+import { db } from '../firebase/config'
 import router from '../router'
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -9,6 +9,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from 'firebase/auth'
+import { collection, addDoc, getDocs } from 'firebase/firestore'
 
 export default createStore({
   state: {
@@ -29,6 +30,26 @@ export default createStore({
     },
   },
   actions: {
+    async addAppUser() {
+      try {
+        const docRef = await addDoc(collection(db, 'users'), {
+          count: 'FamiliaK',
+          email: 'karinacoste@gmail',
+          first: 'Nicolás',
+          last: 'Valls',
+          roll: 'user',
+        })
+        console.log('Document written with ID: ', docRef.id)
+      } catch (e) {
+        console.error('Error adding document: ', e)
+      }
+    },
+    async getAppUsers() {
+      const querySnapshot = await getDocs(collection(db, 'users'))
+      querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data().first}`)
+      })
+    },
     async signup(context, { email, password }) {
       console.log('signup action')
       // async code
