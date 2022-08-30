@@ -14,7 +14,7 @@
           required
           class="border w-full p-2 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
         />
-        <label class="ml-1" for="email">Password:</label>
+        <label class="ml-1" for="password">Password:</label>
         <input
           type="password"
           name="password"

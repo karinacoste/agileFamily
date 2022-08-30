@@ -8,19 +8,34 @@ import {
   updateProfile,
   onAuthStateChanged,
   signOut,
+  sendEmailVerification,
 } from 'firebase/auth'
-import { collection, addDoc, getDocs } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  addDoc,
+  getDocs,
+  getDoc,
+  setDoc,
+} from 'firebase/firestore'
 
 export default createStore({
   state: {
+    authUser: null,
     user: null,
+    userId: null,
     authIsReady: false,
   },
   getters: {},
   mutations: {
+    setAuthUser(state, payload) {
+      state.authUser = payload
+    },
     setUser(state, payload) {
       state.user = payload
-      console.log('User', state.user)
+    },
+    setUserId(state, payload) {
+      state.userId = payload
     },
     setAuthIsready(state, payload) {
       state.authIsReady = payload
@@ -28,18 +43,18 @@ export default createStore({
     clearUser(state) {
       state.user = null
     },
+    clearAuthUser(state) {
+      state.authUser = null
+    },
   },
   actions: {
-    async addAppUser() {
+    async createNewUser(context, userInfo) {
       try {
-        const docRef = await addDoc(collection(db, 'users'), {
-          count: 'FamiliaK',
-          email: 'karinacoste@gmail',
-          first: 'Nicolás',
-          last: 'Valls',
-          roll: 'user',
-        })
-        console.log('Document written with ID: ', docRef.id)
+        // const docRef = await setDoc(collection(db, 'users'), {
+        const docRef = await setDoc(
+          doc(db, 'users', context.state.user.userId),
+          userInfo
+        )
       } catch (e) {
         console.error('Error adding document: ', e)
       }
@@ -50,12 +65,37 @@ export default createStore({
         console.log(`${doc.id} => ${doc.data().first}`)
       })
     },
-    async signup(context, { email, password }) {
+    async signup(context, userInfo) {
       console.log('signup action')
       // async code
+      const { displayName, email, password, name, surname, role } = userInfo
       const res = await createUserWithEmailAndPassword(auth, email, password)
       if (res) {
-        context.commit('setUser', auth.currentUser)
+        const userId = auth.currentUser.uid
+        context.commit('setAuthUser', auth.currentUser)
+        // context.commit('setUserId', auth.currentUser.uid)
+        context.commit('setUser', {
+          userId,
+          displayName,
+          name,
+          surname,
+          email,
+          password,
+          role,
+        })
+
+        try {
+          context.dispatch('createNewUser', {
+            displayName,
+            email,
+            name,
+            surname,
+            role,
+          })
+          console.log('nuevo user')
+        } catch (error) {
+          console.log('ERROR', error)
+        }
       } else {
         throw new Error('could not complete sigup')
       }
@@ -67,20 +107,17 @@ export default createStore({
         // photoURL: 'https://example.com/jane-q-user/profile.jpg',
       })
       if (res) {
-        // context.commit('setUser', res.user)
-        context.commit('setUser', auth.currentUser)
+        context.commit('setAuthUser', auth.currentUser)
       } else {
         throw new Error('could not complete upDateUserInfooo')
       }
     },
     async login(context, { email, password }) {
-      console.log('login action')
       const res = await signInWithEmailAndPassword(auth, email, password)
       if (res) {
         // context.commit('setUser', res.user)
-        context.commit('setUser', auth.currentUser)
-        window.localStorage.setItem('token', auth.currentUser.email)
-        router.push('/')
+        context.commit('setAuthUser', auth.currentUser)
+        await context.dispatch('fetchUserById', auth.currentUser.uid)
       } else {
         throw new Error('could not complete login')
       }
@@ -88,17 +125,30 @@ export default createStore({
     async logout(context) {
       console.log('logout action')
       const res = await signOut(auth)
+      context.commit('setAuthUser', null)
       context.commit('setUser', null)
       window.localStorage.clear()
       router.push('/ExternalHomeView')
     },
-    async fetchUser(context) {
+    async fetchUserById(context, uid) {
+      const docRef = doc(db, 'users', uid)
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists()) {
+        context.commit('setUser', docSnap.data())
+        localStorage.clear()
+      } else {
+        // doc.data() will be undefined in this case
+        console.log('No such document!')
+      }
+    },
+    async fetchAuthUser(context) {
       onAuthStateChanged(auth, async (user) => {
         if (user === null) {
           context.commit('clearUser')
+          context.commit('clearAuthUser')
         } else {
-          context.commit('setUser', user)
-          console.log('fetchUser', user)
+          context.commit('setAuthUser', user)
+          await context.dispatch('fetchUserById', user.uid)
           if (
             router.isReady() &&
             router.currentRoute.value.path === '/ExternalHomeView'
@@ -111,8 +161,3 @@ export default createStore({
   },
   modules: {},
 })
-
-// const unsub = onAuthStateChanged(auth, (user) => {
-//   store.commit('setAuthIsready', true), store.commit('setUser', user)
-//   unsub()
-// })

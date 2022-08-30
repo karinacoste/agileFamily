@@ -1,6 +1,15 @@
 <template>
-  <div class="">
-    <external-nav-bar></external-nav-bar>
+  <div>
+    <external-nav-bar>
+      <span
+        class="border border-primary w-24 h-9 rounded-md text-center pt-1 hover:text-primary"
+        ><router-link to="/LoginView">Login</router-link></span
+      >
+      <span
+        class="border border-primary ml-4 text-white h-9 w-24 rounded-md text-center pt-1 bg-primary hover:bg-primaryDark"
+        ><router-link to="/SignupView">Signup</router-link></span
+      >
+    </external-nav-bar>
 
     <text-banner> <h1 class="text-5xl">EXTERNALLLL!!!!</h1></text-banner>
   </div>
@@ -20,16 +29,9 @@ export default {
     ExternalNavBar,
   },
   setup() {
-    const blogs = ref([
-      { title: 'Why Coffee is Better than Tea', id: 1 },
-      { title: '...Then I Took an Arrow in the Knee', id: 2 },
-      { title: 'Mario vs Luigi, Ultimate Showdown', id: 3 },
-    ])
     const store = useStore()
 
-    return {
-      blogs,
-    }
+    return {}
   },
 }
 </script>
