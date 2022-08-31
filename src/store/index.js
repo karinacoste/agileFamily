@@ -51,10 +51,17 @@ export default createStore({
     async createNewUser(context, userInfo) {
       try {
         // const docRef = await setDoc(collection(db, 'users'), {
-        const docRef = await setDoc(
-          doc(db, 'users', context.state.user.userId),
-          userInfo
-        )
+        await setDoc(doc(db, 'users', context.state.user.userId), userInfo)
+      } catch (e) {
+        console.error('Error adding document: ', e)
+      }
+    },
+
+    async createNewAccount(context, accountInfo) {
+      try {
+        // const docRef = await setDoc(collection(db, 'users'), {
+        // await setDoc(doc(db, 'accounts', newAccount))
+        await addDoc(collection(db, 'accounts'), accountInfo)
       } catch (e) {
         console.error('Error adding document: ', e)
       }
@@ -92,7 +99,15 @@ export default createStore({
             surname,
             role,
           })
-          console.log('nuevo user')
+          const newAccountInfo = {
+            admin: {
+              userName: displayName,
+              uid: userId,
+            },
+            users: [],
+          }
+
+          context.dispatch('createNewAccount', newAccountInfo)
         } catch (error) {
           console.log('ERROR', error)
         }

@@ -23,13 +23,13 @@ export default {
   setup() {
     const store = useStore()
     const userDisplayName = ref(store.state.user.displayName)
-    const addUser = async () => {
-      try {
-        store.dispatch('createNewAccount')
-      } catch (e) {
-        console.error('ErrorRRRRR ', e)
-      }
-    }
+    // const addUser = async () => {
+    //   try {
+    //     store.dispatch('createNewAccount')
+    //   } catch (e) {
+    //     console.error('ErrorRRRRR ', e)
+    //   }
+    // }
     const showUsers = async () => {
       try {
         store.dispatch('getAppUsers')
@@ -41,7 +41,7 @@ export default {
 
     return {
       // showedUser,
-      addUser,
+      // addUser,
       showUsers,
       userDisplayName,
     }
