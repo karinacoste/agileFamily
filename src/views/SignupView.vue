@@ -6,6 +6,30 @@
         <div class="flex justify-center items-center mb-4">
           <img alt="Vue logo" src="@/assets/images/logo.png" />
         </div>
+        <input-field
+          type="text"
+          inputName="displayName"
+          inputLabel="Nombre de usurio"
+          :inputValue="displayName"
+          v-model:inputValue="displayName"
+        >
+        </input-field>
+        <input-field
+          type="text"
+          inputName="name"
+          inputLabel="Nombre"
+          :inputValue="name"
+          v-model:inputValue="name"
+        >
+        </input-field>
+        <input-field
+          type="text"
+          inputName="surname"
+          inputLabel="Apellidos"
+          :inputValue="surname"
+          v-model:inputValue="surname"
+        >
+        </input-field>
         <label class="ml-1" for="email">Email:</label>
         <input
           type="email"
@@ -28,9 +52,9 @@
       <div class="py-4">
         <button
           type="submit"
-          class="h-full w-full px-2 py-3 flex items-center justify-center rounded-md bg-primary text-white focus:outline-none"
+          class="h-full w-full px-2 py-3 flex items-center justify-center rounded-md bg-primary hover:bg-primaryDark text-white focus:outline-none"
         >
-          Login
+          Crear cuenta
         </button>
       </div>
     </form>
@@ -41,30 +65,41 @@
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import ExternalNavBar from '../components/nav/ExternalNavBar.vue'
+import InputField from '@/components/forms/commons/InputField.vue'
 
 export default {
   components: {
-    // LoginForm,
+    InputField,
+  },
+  data() {
+    return {}
   },
   setup() {
     const email = ref('')
     const password = ref('')
+    const displayName = ref('')
+    const name = ref('')
+    const surname = ref('')
+    // const nombre = ref('')
     const error = ref(null)
     const store = useStore()
     const router = useRouter()
     const handleSubmit = async () => {
       try {
-        await store.dispatch('login', {
+        await store.dispatch('signup', {
+          displayName: displayName.value,
+          name: name.value,
+          surname: surname.value,
           email: email.value,
           password: password.value,
+          role: 'admin',
         })
         router.push('/')
       } catch (err) {
         error.value = err.message
       }
     }
-    return { handleSubmit, email, password, error }
+    return { handleSubmit, email, password, displayName, name, surname, error }
   },
 }
 </script>

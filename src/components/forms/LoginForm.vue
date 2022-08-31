@@ -1,10 +1,11 @@
 <template>
-  <div class="h-screen relative justify-center items-center flex">
-    <div v-if="error">{{ error }}</div>
+  <div>
     <form @submit.prevent="handleSubmit">
       <div class="md:w-96 w-80">
+        <p>email{{ email }}</p>
+        <p>password{{ password }}</p>
         <div class="flex justify-center items-center mb-4">
-          <img alt="Vue logo" src="@/assets/images/logo.png" />
+          <img alt="Vue logo" src="../../assets/images/logo.png" />
         </div>
         <label class="ml-1" for="email">Email:</label>
         <input
@@ -14,7 +15,7 @@
           required
           class="border w-full p-2 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
         />
-        <label class="ml-1" for="password">Password:</label>
+        <label class="ml-1" for="email">Password:</label>
         <input
           type="password"
           name="password"
@@ -39,32 +40,14 @@
 
 <script>
 import { ref } from 'vue'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-import ExternalNavBar from '../components/nav/ExternalNavBar.vue'
-
 export default {
-  components: {
-    // LoginForm,
-  },
   setup() {
     const email = ref('')
     const password = ref('')
-    const error = ref(null)
-    const store = useStore()
-    const router = useRouter()
-    const handleSubmit = async () => {
-      try {
-        await store.dispatch('login', {
-          email: email.value,
-          password: password.value,
-        })
-        router.push('/')
-      } catch (err) {
-        error.value = err.message
-      }
+    const handleSubmit = () => {
+      console.log(email.value, password.value)
     }
-    return { handleSubmit, email, password, error }
+    return { handleSubmit, email, password }
   },
 }
 </script>
