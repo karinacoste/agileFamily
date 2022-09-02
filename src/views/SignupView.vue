@@ -1,63 +1,75 @@
 <template>
-  <div class="h-screen relative justify-center items-center flex">
+  <div
+    class="h-screen relative justify-center items-center flex flex-wrap-reverse"
+  >
     <div v-if="error">{{ error }}</div>
-    <form @submit.prevent="handleSubmit">
-      <div class="md:w-96 w-80">
-        <div class="flex justify-center items-center mb-4">
-          <img alt="Vue logo" src="@/assets/images/logo.png" />
+    <div class="w-full md:w-3/5 flex justify-center items-center">
+      <img
+        src="../assets/images/familyImage-WhiteBg.png"
+        alt="agileFamily Logo"
+      />
+    </div>
+    <div
+      class="w-full md:w-2/5 flex justify-center md:justify-start items-center mt-14 md:mt-0"
+    >
+      <form @submit.prevent="handleSubmit">
+        <div class="md:w-96 w-80">
+          <div class="flex justify-center items-center mb-4">
+            <img alt="Vue logo" src="@/assets/images/logo.png" />
+          </div>
+          <input-field
+            type="text"
+            inputName="displayName"
+            inputLabel="Nombre de usurio"
+            :inputValue="displayName"
+            v-model:inputValue="displayName"
+          >
+          </input-field>
+          <input-field
+            type="text"
+            inputName="name"
+            inputLabel="Nombre"
+            :inputValue="name"
+            v-model:inputValue="name"
+          >
+          </input-field>
+          <input-field
+            type="text"
+            inputName="surname"
+            inputLabel="Apellidos"
+            :inputValue="surname"
+            v-model:inputValue="surname"
+          >
+          </input-field>
+          <label class="ml-1" for="email">Email:</label>
+          <input
+            type="email"
+            name="email"
+            v-model="email"
+            required
+            class="border w-full p-2 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
+          />
+          <label class="ml-1" for="password">Password:</label>
+          <input
+            type="password"
+            name="password"
+            v-model="password"
+            required
+            class="border w-full p-2 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
+          />
         </div>
-        <input-field
-          type="text"
-          inputName="displayName"
-          inputLabel="Nombre de usurio"
-          :inputValue="displayName"
-          v-model:inputValue="displayName"
-        >
-        </input-field>
-        <input-field
-          type="text"
-          inputName="name"
-          inputLabel="Nombre"
-          :inputValue="name"
-          v-model:inputValue="name"
-        >
-        </input-field>
-        <input-field
-          type="text"
-          inputName="surname"
-          inputLabel="Apellidos"
-          :inputValue="surname"
-          v-model:inputValue="surname"
-        >
-        </input-field>
-        <label class="ml-1" for="email">Email:</label>
-        <input
-          type="email"
-          name="email"
-          v-model="email"
-          required
-          class="border w-full p-2 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
-        />
-        <label class="ml-1" for="password">Password:</label>
-        <input
-          type="password"
-          name="password"
-          v-model="password"
-          required
-          class="border w-full p-2 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
-        />
-      </div>
-      <!-- <label for="email">Password:</label>
+        <!-- <label for="email">Password:</label>
       <input type="password" name="password" v-model="password" required /> -->
-      <div class="py-4">
-        <button
-          type="submit"
-          class="h-full w-full px-2 py-3 flex items-center justify-center rounded-md bg-primary hover:bg-primaryDark text-white focus:outline-none"
-        >
-          Crear cuenta
-        </button>
-      </div>
-    </form>
+        <div class="py-4">
+          <button
+            type="submit"
+            class="h-full w-full px-2 py-3 flex items-center justify-center rounded-md bg-primary hover:bg-primaryDark text-white focus:outline-none"
+          >
+            Crear cuenta
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
