@@ -24,6 +24,7 @@ export default createStore({
     authUser: null,
     user: null,
     userId: null,
+    userIdToken: null,
     authIsReady: false,
   },
   getters: {},
@@ -36,6 +37,9 @@ export default createStore({
     },
     setUserId(state, payload) {
       state.userId = payload
+    },
+    setUserIdToken(state, payload) {
+      state.userIdToken = payload
     },
     setAuthIsready(state, payload) {
       state.authIsReady = payload
@@ -168,6 +172,10 @@ export default createStore({
             router.isReady() &&
             router.currentRoute.value.path === '/ExternalHomeView'
           ) {
+            const token = await auth.currentUser.getIdToken(true)
+            context.commit('setUserIdToken', token)
+            console.log('stateUserIdToken', context.state.userIdToken)
+            context.commit('setAuthUser', user)
             router.push('/')
           }
         }

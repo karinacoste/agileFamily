@@ -1,0 +1,27 @@
+{
+  "uid": "bk3DfTu3Evdg1qo79w1cU0q4wry2",
+  "email": "karnacoste@yahoo.es",
+  "emailVerified": false,
+  "isAnonymous": false,
+  "providerData": [
+    {
+      "providerId": "password",
+      "uid": "karnacoste@yahoo.es",
+      "displayName": null,
+      "email": "karnacoste@yahoo.es",
+      "phoneNumber": null,
+      "photoURL": null
+    }
+  ],
+  "stsTokenManager": {
+    "refreshToken": "AOEOula3yqQ-TwgDjTu_oUuKgk9ZLjueivMzq-Cw5fNqvcUnt7HHbC-oWjh8_VCtPqgk2gXkqN_4qmT0wFEyWxX7Nl6Lido1IGWtA-uG2fwFSzlrWLUeZS6O4FBunmMB07fhV_VtNq2KSDhLRxbWG8jG9ioZwsJJMkVJcTZzO_ic0Qbxj99x66eIwDfQ-nespiPLYI6SEBjZN_c526fT3nkzRCTz4xBBhA",
+    "accessToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImVkNmJjOWRhMWFmMjM2ZjhlYTU2YTVkNjIyMzQwMWZmNGUwODdmMTEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20va2MtcHJvamVjdC1mNmI2ZiIsImF1ZCI6ImtjLXByb2plY3QtZjZiNmYiLCJhdXRoX3RpbWUiOjE2NjIzNzIyNjYsInVzZXJfaWQiOiJiazNEZlR1M0V2ZGcxcW83OXcxY1UwcTR3cnkyIiwic3ViIjoiYmszRGZUdTNFdmRnMXFvNzl3MWNVMHE0d3J5MiIsImlhdCI6MTY2MjQ1MDg1MywiZXhwIjoxNjYyNDU0NDUzLCJlbWFpbCI6Imthcm5hY29zdGVAeWFob28uZXMiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsia2FybmFjb3N0ZUB5YWhvby5lcyJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.XdFOuV71kaDxbOPLIq_zxh5evj5fbMix18PxSlX-ciqyvwWlSQyk4rfUpp_lxRFO-plY8hQILsE43GL8QUAMeApvoVLfPEiU4FTpscIJgIA_hwgrM_3Du3yoPTBL8gwE-cMdLntfvB9IXfTcaoxTMTLlxYjtxWb3VUSyPpZFHUKuBtLUSYUA4tcDOmzaszBeGy1988VhD0HjsvXsrOI4a1_YmI47R8GiWoTNz9fZohkov6h-hNSZbnZZ1-KgiRkbwAyzrs1v-NlvjVH1vTMnZJ8rYz0F80yQehLJtGZnnxZFE74HLAvS35yEXVQOpqWBYqlF-D_n3ak7DXa_pY4AxA",
+    "expirationTime": 1662454451746
+  },
+  "createdAt": "1661924074796",
+  "lastLoginAt": "1662372266355",
+  "apiKey": "AIzaSyA7SnAdcJnEIiNaT7CR7yUAoE0abAZ84Z0",
+  "appName": "[DEFAULT]",
+
+  "prueba-refreshToken": "AOEOulaHMCzJzqk22TgymIuFLteiJkciSOdvru-bEuCUeoCKZRK3pKDpxm3pZLj4sVOpqJMwmPdbI0u8YLMSNGRJvfD3CYEYbkenAKEJr6nKPAzFkiO3j9C8hhmYV0loJCWRCueCiINji_QD-TGoauAC9pxohpB1mRzra6vDgG1ykVjY-neW1ruM2aBRGIELJ4rl68ALmwsTJtSpYQ1EX0YNXdrZdHeWTQ"
+}
