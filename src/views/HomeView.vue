@@ -3,7 +3,7 @@
     <!-- <p class="font-bold">showedUser {{ showedUser.email }}</p> -->
     <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
     <h1 class="text-5xl">Estoy logueada!!!!{{ userDisplayName }}</h1>
-    <p>userIdToken{{ authUser }}</p>
+
     <!-- <h1 class="text-5xl">{{ showedUser.email }}</h1> -->
     <button @click="addUser">Crear user</button>
     <button @click="showUsers">Show user</button>
