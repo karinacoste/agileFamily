@@ -7,40 +7,40 @@
     <!-- <h1 class="text-5xl">{{ showedUser.email }}</h1> -->
     <button @click="addUser">Crear user</button>
     <button @click="showUsers">Show user</button>
-    <div
-      id="drop-zone"
-      class="mt-20 min-h-min flex flex-col items-center justify-center bg-slate-200"
-      @drop="onDrop($event, 1)"
-      @dragover.prevent
-      @dragenter.prevent
-    >
-      <div
-        v-for="item in getList(1)"
-        :key="item.id"
-        id="drag-el"
-        class="p-6 bg-slate-400 my-4 w-52 text-center"
-        draggable="true"
-        @dragstart="startDrag($event, item)"
-      >
-        {{ item.title }}
-      </div>
-    </div>
-    <div
-      id="drop-zone2"
-      class="mt-20 min-h-min flex flex-col items-center justify-center bg-slate-200"
-      @drop="onDrop($event, 2)"
-      @dragover.prevent
-      @dragenter.prevent
-    >
-      <div
-        v-for="item in getList(2)"
-        :key="item.id"
-        id="drag-el"
-        class="p-6 bg-slate-400 my-4 w-52 text-center"
-        draggable="true"
-        @dragstart="startDrag($event, item)"
-      >
-        {{ item.title }}
+    <div class="mt-5 container">
+      <div class="flex justify-content-center border py-5">
+        <div class="mx-6">
+          <h4 class="mb-3">Draggable 1</h4>
+          <draggable
+            class="draggable-list bg-slate-400 w-52 h-48 p-10 bg-amber-200"
+            :list="list1"
+            group="my-group"
+          >
+            <template #item="{ element }">
+              <div
+                class="list-group-item bg-red-400"
+                :class="{ 'not-draggable': !enabled }"
+              >
+                {{ element.name }}
+              </div>
+            </template>
+          </draggable>
+        </div>
+
+        <div class="">
+          <h4 class="mb-3">Draggable 2</h4>
+          <draggable
+            class="draggable-list h-52 p-10 bg-lime-500 w-52"
+            :list="list2"
+            group="my-group"
+          >
+            <template #item="{ element }">
+              <div class="list-item p-4" :key="element.name">
+                {{ element.name }}
+              </div>
+            </template>
+          </draggable>
+        </div>
       </div>
     </div>
   </div>
@@ -52,10 +52,11 @@ import { ref } from 'vue'
 import { useStore } from 'vuex'
 import InternalNavBar from '@/components/nav/InternalNavBar.vue'
 import { onBeforeMount } from 'vue'
+import draggable from 'vuedraggable'
 // import NavBar from '../components/nav/NavBar.vue'
 
 export default {
-  components: { InternalNavBar },
+  components: { InternalNavBar, draggable },
 
   setup() {
     const store = useStore()
@@ -70,36 +71,18 @@ export default {
       }
     }
     console.log('user', store.state.user)
-    const items = ref([
-      { id: 0, title: 'Item A', list: 1 },
-      { id: 1, title: 'Item B', list: 1 },
-      { id: 2, title: 'Item C', list: 2 },
-      { id: 3, title: 'Item D', list: 2 },
-    ])
-    const getList = (list) => {
-      return items.value.filter((item) => item.list == list)
-    }
-    const onDrop = (event, list) => {
-      const itemID = event.dataTransfer.getData('itemID')
-      const item = items.value.find((item) => item.id == itemID)
-      item.list = list
-    }
-    const startDrag = (event, item) => {
-      console.log(item)
-      event.dataTransfer.dropEffect = 'move'
-      event.dataTransfer.effectAllowed = 'move'
-      event.dataTransfer.setData('itemID', item.id)
-    }
+    const list1 = ref([{ name: 'Drag Me!' }, { name: 'Dos' }])
+    const list2 = ref([{ name: 'Drag Me Too!' }, { name: 'Dos' }])
+
     return {
       // showedUser,
       // addUser,
       showUsers,
       userDisplayName,
-      getList,
-      startDrag,
-      onDrop,
       authUser,
       userIdToken,
+      list1,
+      list2,
     }
   },
 }

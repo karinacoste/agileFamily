@@ -10,7 +10,7 @@
       />
     </div>
     <div
-      class="w-full md:w-2/5 flex justify-center md:justify-start items-center mt-14 md:mt-0"
+      class="w-full md:w-2/5 flex justify-center md:justify-start items-center mt-10 mt-14 md:mt-0"
     >
       <form @submit.prevent="handleSubmit">
         <div class="md:w-96 w-80">
