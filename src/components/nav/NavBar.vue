@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <nav class="bg-white">
     <router-link to="/">Home</router-link> |
     <router-link to="/LoginView">Login karina</router-link> |
     <router-link to="/SignupView">Signup karina</router-link> |
