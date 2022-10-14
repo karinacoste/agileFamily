@@ -7,7 +7,8 @@
     <!-- <button @click="addUser">Crear user</button>
     <button @click="showUsers">Show user</button> -->
     <div class="w-full flex justify-between p-2 m-auto">
-      <!-- <p>sprints{{ sprints }}</p> -->
+      objectives{{ getObjectives }}
+
       <div class="w-1/5 px-5">
         <div class="w-full py-2 font-bold border-b-4 border-gray-300">
           OBJETIVOS
@@ -50,7 +51,7 @@
     <!-- // ////////////////////////////////// -->
 
     <draggable
-      :list="sprints[0].objectives"
+      :list="list"
       item-key="id"
       class="w-full h-full"
       group="my-group"
@@ -66,10 +67,10 @@
               {{ element.name }}
             </div>
           </div>
-          <div v-for="state in states" :key="state" class="w-1/5 px-5">
+          <div v-for="state in element.states" :key="state" class="w-1/5 px-5">
             <nested-draggable>
               <draggable
-                :list="element.tasks"
+                :list="state.items"
                 item-key="id"
                 class="w-full h-full"
                 group="my-group2"
@@ -82,12 +83,12 @@
                       {{ element.id }} - {{ element.name }}
                     </div>
                     <div class="flex items-center pb-3 pr-4">
-                      <!-- <img
-                      :src="
-                        require(`@/assets/images/users/${element.userImg}.png`)
-                      "
-                      alt="user image"
-                    /> -->
+                      <img
+                        :src="
+                          require(`@/assets/images/users/${element.userImg}.png`)
+                        "
+                        alt="user image"
+                      />
 
                       <span class="ml-2">{{ element.priority }}</span>
                       <span class="ml-2">{{ element.estimateTime }}</span>
@@ -125,44 +126,22 @@ export default {
     InternalNavBar,
     draggable,
   },
-  async beforeCreate() {
-    // const store = useStore()
-    // await store.dispatch('getSprints')
-  },
-  async mounted() {
-    const store = useStore()
-    store.dispatch('getSprints')
 
-    // await store.dispatch('getSprints')
-    // try {
-    //   store.dispatch('getObjectives')
-    //   console.log('Holaaa')
-    //   console.log('store.state', store.state.objectives)
-    // } catch (e) {
-    //   console.error('Error getObjectives', e)
-    // }
+  mounted() {
+    const store = useStore()
+    try {
+      store.dispatch('setSprints')
+      console.log('Holaaaaass')
+      console.log('store.state', store.state.sprints)
+    } catch (e) {
+      console.error('Error getObjectives', e)
+    }
   },
 
   setup() {
-    const states = ['todo', 'inProgress', 'blocked', 'completed']
     const store = useStore()
     const getObjectives = ref(store.state.objectives)
 
-    async function getToDos() {
-      try {
-        await store.dispatch('getSprints')
-        console.log('Holaaa')
-        prueba = [9, 9]
-      } catch (e) {
-        console.error('Error getAppUsers', e)
-      }
-      return [1, 2, 3]
-    }
-
-    const userDisplayName = ref(store.state.user.displayName)
-    const sprints = ref(store.getters['getterSprints'])
-    // const sprints = ref(store.state.sprints)
-    const userAccountId = ref(store.state.user.accountId)
     const authUser = ref(store.state.authUser)
     const userIdToken = ref(store.state.userIdToken)
     const showUsers = async () => {
@@ -218,9 +197,6 @@ export default {
     return {
       // showedUser,
       // addUser,
-      states,
-      sprints: computed(() => store.state.sprints),
-      userAccountId,
       showUsers,
       userDisplayName,
       authUser,

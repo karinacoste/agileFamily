@@ -12,6 +12,9 @@ import {
 } from 'firebase/auth'
 import {
   collection,
+  onSnapshot,
+  query,
+  where,
   doc,
   addDoc,
   getDocs,
@@ -21,14 +24,31 @@ import {
 
 export default createStore({
   state: {
+    sprints: [2, 2],
+    currentSprint: [],
     authUser: null,
     user: null,
     userId: null,
     userIdToken: null,
     authIsReady: false,
+    objectives: [],
+    accountId: null,
   },
   getters: {},
   mutations: {
+    setSprints(state, payload) {
+      state.sprints = payload
+      console.log('payload', payload)
+    },
+    setCurrentSprint(state, payload) {
+      state.currentSprint = payload
+    },
+    setAccountId(state, payload) {
+      state.accountId = payload
+    },
+    setObjectives(state, payload) {
+      state.objectives = payload
+    },
     setAuthUser(state, payload) {
       state.authUser = payload
     },
@@ -65,7 +85,8 @@ export default createStore({
       try {
         // const docRef = await setDoc(collection(db, 'users'), {
         // await setDoc(doc(db, 'accounts', newAccount))
-        await addDoc(collection(db, 'accounts'), accountInfo)
+        const docRef = await addDoc(collection(db, 'accounts'), accountInfo)
+        context.commit('setaccountId', docRef.id)
       } catch (e) {
         console.error('Error adding document: ', e)
       }
@@ -73,11 +94,71 @@ export default createStore({
     async getAppUsers() {
       const querySnapshot = await getDocs(collection(db, 'users'))
       querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data().first}`)
+        console.log(`${doc.id} => ${doc.data()}`)
       })
     },
+    async getSprints(context) {
+      const accountId = await context.state.user.accountId
+      // const accountId = 'Ilfq5q1BKhUTou0F5ec4'
+
+      console.log('context.state.user.accountId', accountId)
+      if (accountId) {
+        const q = query(
+          collection(db, 'accounts', accountId.replace(/ /g, ''), 'sprints')
+        )
+        const unsubscribe = onSnapshot(
+          q,
+          async (querySnapshot) => {
+            const sprints = []
+            querySnapshot.forEach((doc) => {
+              const oneSprint = doc.data()
+              oneSprint.id = doc.id
+              sprints.push(oneSprint)
+            })
+            context.commit('setSprints', sprints)
+            console.log('sprints: ', sprints[0].id)
+          },
+          (error) => {
+            console.log('error ', error)
+          }
+        )
+      }
+    },
+    async getObjectives(context) {
+      const q = query(
+        collection(db, 'objectives'),
+        where('sprint', '==', '2022-41')
+      )
+      const unsubscribe = onSnapshot(
+        q,
+        (querySnapshot) => {
+          const objectives = []
+          querySnapshot.forEach((doc) => {
+            const oneObjective = doc.data()
+            oneObjective.id = doc.id
+            objectives.push(oneObjective)
+          })
+          console.log('objectives: ', objectives)
+          context.commit('setObjectives', objectives)
+        },
+        (error) => {
+          console.log('error ', error)
+        }
+      )
+
+      // const res = []
+      // const querySnapshot = await getDocs(collection(db, 'objectives'))
+      // querySnapshot.forEach((doc) => {
+      //   const object = doc.data()
+      //   object.id = doc.id
+      //   res.push(object)
+      // })
+      // context.commit('setObjectives', res)
+      // unsubscribe()
+      // console.log('res', res)
+    },
+
     async signup(context, userInfo) {
-      console.log('signup action')
       // async code
       const { displayName, email, password, name, surname, role } = userInfo
       const res = await createUserWithEmailAndPassword(auth, email, password)
@@ -94,27 +175,34 @@ export default createStore({
           password,
           role,
         })
-
-        try {
-          context.dispatch('createNewUser', {
-            displayName,
-            email,
-            name,
-            surname,
-            role,
-          })
-          const newAccountInfo = {
-            admin: {
-              userName: displayName,
-              uid: userId,
-            },
-            users: [],
-          }
-
-          context.dispatch('createNewAccount', newAccountInfo)
-        } catch (error) {
-          console.log('ERROR', error)
+        const newAccountInfo = {
+          admin: {
+            userName: email,
+            uid: userId,
+          },
+          users: [],
         }
+        try {
+          const docRef = await addDoc(
+            collection(db, 'accounts'),
+            newAccountInfo
+          )
+          if (docRef.id) {
+            try {
+              await context.dispatch('createNewUser', {
+                displayName,
+                email,
+                name,
+                surname,
+                role,
+                accountId: docRef.id,
+              })
+            } catch (error) {
+              console.log('ERROR', error)
+            }
+          }
+          // await context.dispatch('createNewAccount', newAccountInfo)
+        } catch (error) {}
       } else {
         throw new Error('could not complete sigup')
       }
@@ -146,7 +234,7 @@ export default createStore({
       const res = await signOut(auth)
       context.commit('setAuthUser', null)
       context.commit('setUser', null)
-      window.localStorage.clear()
+      // window.localStorage.clear()
       router.push('/ExternalHomeView')
     },
     async fetchUserById(context, uid) {
@@ -154,7 +242,7 @@ export default createStore({
       const docSnap = await getDoc(docRef)
       if (docSnap.exists()) {
         context.commit('setUser', docSnap.data())
-        localStorage.clear()
+        // localStorage.clear()
       } else {
         // doc.data() will be undefined in this case
         console.log('No such document!')
@@ -180,6 +268,11 @@ export default createStore({
           }
         }
       })
+    },
+  },
+  getters: {
+    getterSprints(state) {
+      return state.sprints
     },
   },
   modules: {},
