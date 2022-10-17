@@ -1,251 +1,93 @@
 [
   {
-    "id": "o-1",
-    "name": "Reforma del baño",
-    "state": "En progreso",
-    "states": [
+    "objectives": [
       {
-        "name": "todos",
-        "items": [
+        "completed": [
           {
-            "id": 1,
-            "name": "Pedir presupuestos y comprarlos",
-            "priority": "baja",
+            "id": "t-2",
+            "priority": "Media",
             "estimateTime": 4,
-            "userImg": "user1"
+            "name": "Pedir presupuestos",
+            "assignedTo": "pedroperez@yahoo.es",
+            "state": "completed"
           },
           {
-            "id": 2,
-            "name": "Ver modelos de baños",
-            "priority": "media",
-            "estimateTime": 4,
-            "userImg": "user1"
+            "estimateTime": 2,
+            "name": "Contar con los abuelos",
+            "id": "t-10",
+            "assignedTo": "karinacoste@yahoo.es",
+            "priority": "Alta",
+            "state": "completed"
           }
-        ]
+        ],
+        "id": "o-1",
+        "blocked": [
+          {
+            "assignedTo": "karinacoste@yahoo.es",
+            "state": "blocked",
+            "name": "Presupuesto del reformador ",
+            "estimateTime": 3,
+            "priority": "Alta",
+            "id": "t-9"
+          },
+          {
+            "id": "t-7",
+            "priority": "Media",
+            "state": "progress",
+            "name": "Ver qué hacer en el sitio",
+            "assignedTo": "karinacoste@yahoo.es",
+            "estimateTime": 3
+          }
+        ],
+        "name": "Reformar baño",
+        "todo": [
+          {
+            "name": "Reformar el baño",
+            "priority": "Alta",
+            "state": "todo",
+            "assignedTo": "karinacoste@yahoo.es",
+            "id": "t-4"
+          },
+          {
+            "name": "Tomar medidas del baño",
+            "estimateTime": 3,
+            "priority": "Media",
+            "id": "t-5",
+            "state": "todo",
+            "assignedTo": "pedrocampo@yahoo.es"
+          }
+        ],
+        "progress": [
+          {
+            "estimateTime": 2,
+            "priority": "Baja",
+            "state": "progress",
+            "id": "t-1",
+            "assignedTo": "pedroperez@yahoo.es",
+            "name": "Ver diseños"
+          },
+          {
+            "priority": "Alta",
+            "assignedTo": "karinacoste@yahoo.es",
+            "name": "Buscar hospedaje",
+            "estimateTime": 2,
+            "id": "t-6",
+            "state": "todo"
+          }
+        ],
+        "state": "inProgress"
       },
       {
-        "name": "inProgress",
-        "items": [
-          {
-            "id": 3,
-            "name": "Read a book",
-            "priority": "baja",
-            "stimateTime": 2,
-            "userImg": "user1"
-          },
-          {
-            "id": 4,
-            "name": "Cooking dinner",
-            "priority": "alta",
-            "estimateTime": 5,
-            "userImg": "user1"
-          }
-        ]
-      },
-      {
-        "name": "block",
-        "items": [
-          {
-            "id": 5,
-            "name": "Proyecto del arquitecto",
-            "priority": "baja",
-            "estimateTime": 4,
-            "userImg": "user1"
-          },
-          {
-            "id": 6,
-            "name": "Compra de azulejos",
-            "priority": "media",
-            "estimateTime": 4,
-            "userImg": "user1"
-          }
-        ]
-      },
-      {
-        "name": "completed",
-        "items": [
-          {
-            "id": 7,
-            "name": "Mirar diseños varios",
-            "priority": "baja",
-            "stimateTime": 5,
-            "userImg": "user1"
-          },
-          {
-            "id": 8,
-            "name": "Medir el baño",
-            "priority": "baja",
-            "estimateTime": 5,
-            "userImg": "user1"
-          }
-        ]
+        "state": "inProgress",
+        "progress": [],
+        "id": "0-2",
+        "completed": [],
+        "blocked": [],
+        "todo": [],
+        "name": "Viaje escapada de finde"
       }
-    ]
-  },
-  {
-    "id": "o-2",
-    "name": "Exposición de ciencias del cole",
-    "state": "En progreso",
-    "states": [
-      {
-        "name": "todos",
-        "items": [
-          {
-            "id": 9,
-            "name": "Investigar sobre los dinosaurios",
-            "priority": "baja",
-            "estimateTime": 4,
-            "userImg": "user1"
-          },
-          {
-            "id": 10,
-            "name": "Ver modelos de baños",
-            "priority": "media",
-            "estimateTime": 4,
-            "userImg": "user1"
-          }
-        ]
-      },
-      {
-        "name": "inProgress",
-        "items": [
-          {
-            "id": 11,
-            "name": "Read a book",
-            "priority": "baja",
-            "stimateTime": 2,
-            "userImg": "user1"
-          },
-          {
-            "id": 12,
-            "name": "Cooking dinner",
-            "priority": "alta",
-            "estimateTime": 5,
-            "userImg": "user1"
-          }
-        ]
-      },
-      {
-        "name": "block",
-        "items": [
-          {
-            "id": 13,
-            "name": "Proyecto del arquitecto",
-            "priority": "baja",
-            "estimateTime": 4,
-            "userImg": "user1"
-          },
-          {
-            "id": 14,
-            "name": "Compra de azulejos",
-            "priority": "media",
-            "estimateTime": 4,
-            "userImg": "user1"
-          }
-        ]
-      },
-      {
-        "name": "completed",
-        "items": [
-          {
-            "id": 15,
-            "name": "Mirar diseños varios",
-            "priority": "baja",
-            "stimateTime": 5,
-            "userImg": "user1"
-          },
-          {
-            "id": 16,
-            "name": "Medir el baño",
-            "priority": "baja",
-            "estimateTime": 5,
-            "userImg": "user1"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "o-3",
-    "name": "Viaje del puente de octubre",
-    "state": "En progreso",
-    "states": [
-      {
-        "name": "todos",
-        "items": [
-          {
-            "id": 9,
-            "name": "Ver campings",
-            "priority": "baja",
-            "estimateTime": 4,
-            "userImg": "user1"
-          },
-          {
-            "id": 10,
-            "name": "Ver restaurantes",
-            "priority": "media",
-            "estimateTime": 4,
-            "userImg": "user1"
-          }
-        ]
-      },
-      {
-        "name": "inProgress",
-        "items": [
-          {
-            "id": 11,
-            "name": "Reservar camping",
-            "priority": "baja",
-            "stimateTime": 2,
-            "userImg": "user1"
-          },
-          {
-            "id": 12,
-            "name": "Comprar comida",
-            "priority": "alta",
-            "estimateTime": 5,
-            "userImg": "user1"
-          }
-        ]
-      },
-      {
-        "name": "block",
-        "items": [
-          {
-            "id": 13,
-            "name": "Proyecto del arquitecto",
-            "priority": "baja",
-            "estimateTime": 4,
-            "userImg": "user1"
-          },
-          {
-            "id": 14,
-            "name": "Compra de azulejos",
-            "priority": "media",
-            "estimateTime": 4,
-            "userImg": "user1"
-          }
-        ]
-      },
-      {
-        "name": "completed",
-        "items": [
-          {
-            "id": 15,
-            "name": "Mirar diseños varios",
-            "priority": "baja",
-            "stimateTime": 5,
-            "userImg": "user1"
-          },
-          {
-            "id": 16,
-            "name": "Medir el baño",
-            "priority": "baja",
-            "estimateTime": 5,
-            "userImg": "user1"
-          }
-        ]
-      }
-    ]
+    ],
+    "name": "Sprint 41",
+    "id": "2022-41"
   }
 ]

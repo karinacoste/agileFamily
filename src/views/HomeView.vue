@@ -1,13 +1,14 @@
 <template>
-  <div class="w-full h-full bg-gray-100">
+  <div class="w-full min-h-max h-full bg-gray-100">
     <!-- <p class="font-bold">showedUser {{ showedUser.email }}</p> -->
     <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
     <h1 class="text-2xl font-bold ml-7 my-5">SPRINT 1 {{ userDisplayName }}</h1>
     <!-- <h1 class="text-5xl">{{ showedUser.email }}</h1> -->
     <!-- <button @click="addUser">Crear user</button>
     <button @click="showUsers">Show user</button> -->
+
     <div class="w-full flex justify-between p-2 m-auto">
-      <!-- <p>sprints{{ sprints }}</p> -->
+      <!-- <p>sprints{{ sprints[0].objectives }}</p> -->
       <div class="w-1/5 px-5">
         <div class="w-full py-2 font-bold border-b-4 border-gray-300">
           OBJETIVOS
@@ -50,12 +51,12 @@
     <!-- // ////////////////////////////////// -->
 
     <draggable
-      :list="sprints[0].objectives"
+      v-model="sprints[0].objectives"
       item-key="id"
       class="w-full h-full"
       group="my-group"
     >
-      <template #item="{ element }"
+      <template #item="{ element: item }"
         ><div
           class="w-full flex justify-between p-2 border-b-4 pt-6 border-gray-200"
         >
@@ -63,23 +64,23 @@
             <div
               class="w-full h-48 px-2 font-semibold text-lg hover:cursor-move"
             >
-              {{ element.name }}
+              {{ item.name }}
             </div>
           </div>
           <div v-for="state in states" :key="state" class="w-1/5 px-5">
             <nested-draggable>
               <draggable
-                :list="element.tasks"
+                v-model="item[state]"
                 item-key="id"
                 class="w-full h-full"
                 group="my-group2"
               >
-                <template #item="{ element }"
+                <template #item="{ element: item }"
                   ><div
                     class="list-group-item bg-white shadow-md mb-6 px-6 py-4 hover:cursor-move"
                   >
                     <div class="font-semibold text-lg pb-12">
-                      {{ element.id }} - {{ element.name }}
+                      {{ item.id }} - {{ item.name }}
                     </div>
                     <div class="flex items-center pb-3 pr-4">
                       <!-- <img
@@ -89,8 +90,8 @@
                       alt="user image"
                     /> -->
 
-                      <span class="ml-2">{{ element.priority }}</span>
-                      <span class="ml-2">{{ element.estimateTime }}</span>
+                      <span class="ml-2">{{ item.priority }}</span>
+                      <span class="ml-2">{{ item.estimateTime }}</span>
                     </div>
                   </div>
                 </template>
@@ -144,7 +145,7 @@ export default {
   },
 
   setup() {
-    const states = ['todo', 'inProgress', 'blocked', 'completed']
+    const states = ['todo', 'progress', 'blocked', 'completed']
     const store = useStore()
     const getObjectives = ref(store.state.objectives)
 
@@ -157,6 +158,10 @@ export default {
         console.error('Error getAppUsers', e)
       }
       return [1, 2, 3]
+    }
+    async function changeState(data, state) {
+      console.log('ccc', data[0].id, state)
+      console.log('object', data[0])
     }
 
     const userDisplayName = ref(store.state.user.displayName)
@@ -174,46 +179,6 @@ export default {
     }
 
     const list = ref(mock)
-    // const inProgress = ref([
-    //   {
-    //     id: 1,
-    //     name: 'Read a book',
-    //     priority: 'baja',
-    //     stimateTime: 2,
-    //     userImg: 'user1',
-    //   },
-    //   {
-    //     id: 2,
-    //     name: 'Cooking dinner',
-    //     priority: 'alta',
-    //     estimateTime: 5,
-    //     userImg: 'user1',
-    //   },
-    // ])
-    // const todos = ref([
-    //   {
-    //     id: 3,
-    //     name: 'Pedir presupuestos y comprarlos',
-    //     priority: 'baja',
-    //     estimateTime: 4,
-    //     userImg: 'user1',
-    //   },
-    //   {
-    //     id: 4,
-    //     name: 'Ver modelos de baños',
-    //     priority: 'media',
-    //     estimateTime: 4,
-    //     userImg: 'user1',
-    //   },
-    // ])
-    // const block = ref([
-    //   { id: 5, name: 'Eat' },
-    //   { id: 6, name: 'Go to the park' },
-    // ])
-    // const completed = ref([
-    //   { id: 7, name: 'Eat' },
-    //   { id: 8, name: 'Go to the park' },
-    // ])
 
     return {
       // showedUser,
