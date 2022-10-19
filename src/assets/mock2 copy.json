@@ -2,89 +2,89 @@
   {
     "objectives": [
       {
+        "name": "Reformar baño",
+        "id": "o-1",
         "completed": [
           {
             "id": "t-2",
-            "priority": "Media",
+            "assignedTo": "pedroperez@yahoo.es",
             "estimateTime": 4,
             "name": "Pedir presupuestos",
-            "assignedTo": "pedroperez@yahoo.es",
-            "state": "completed"
-          },
-          {
-            "estimateTime": 2,
-            "name": "Contar con los abuelos",
-            "id": "t-10",
-            "assignedTo": "karinacoste@yahoo.es",
-            "priority": "Alta",
-            "state": "completed"
-          }
-        ],
-        "id": "o-1",
-        "blocked": [
-          {
-            "assignedTo": "karinacoste@yahoo.es",
-            "state": "blocked",
-            "name": "Presupuesto del reformador ",
-            "estimateTime": 3,
-            "priority": "Alta",
-            "id": "t-9"
-          },
-          {
-            "id": "t-7",
             "priority": "Media",
-            "state": "progress",
-            "name": "Ver qué hacer en el sitio",
+            "state": "completed"
+          },
+          {
             "assignedTo": "karinacoste@yahoo.es",
-            "estimateTime": 3
+            "id": "t-10",
+            "state": "completed",
+            "priority": "Alta",
+            "name": "Contar con los abuelos",
+            "estimateTime": 2
           }
         ],
-        "name": "Reformar baño",
         "todo": [
           {
+            "state": "todo",
             "name": "Reformar el baño",
             "priority": "Alta",
-            "state": "todo",
-            "assignedTo": "karinacoste@yahoo.es",
-            "id": "t-4"
+            "id": "t-4",
+            "assignedTo": "karinacoste@yahoo.es"
           },
           {
-            "name": "Tomar medidas del baño",
-            "estimateTime": 3,
-            "priority": "Media",
             "id": "t-5",
             "state": "todo",
-            "assignedTo": "pedrocampo@yahoo.es"
+            "estimateTime": 3,
+            "assignedTo": "pedrocampo@yahoo.es",
+            "priority": "Media",
+            "name": "Tomar medidas del baño"
+          }
+        ],
+        "state": "inProgress",
+        "blocked": [
+          {
+            "priority": "Alta",
+            "id": "t-9",
+            "name": "Presupuesto del reformador ",
+            "state": "blocked",
+            "assignedTo": "karinacoste@yahoo.es",
+            "estimateTime": 3
+          },
+          {
+            "state": "progress",
+            "id": "t-7",
+            "estimateTime": 3,
+            "assignedTo": "karinacoste@yahoo.es",
+            "name": "Ver qué hacer en el sitio",
+            "priority": "Media"
           }
         ],
         "progress": [
           {
+            "name": "Ver diseños",
             "estimateTime": 2,
-            "priority": "Baja",
             "state": "progress",
-            "id": "t-1",
+            "priority": "Baja",
             "assignedTo": "pedroperez@yahoo.es",
-            "name": "Ver diseños"
+            "id": "t-1"
           },
           {
-            "priority": "Alta",
             "assignedTo": "karinacoste@yahoo.es",
             "name": "Buscar hospedaje",
-            "estimateTime": 2,
             "id": "t-6",
+            "estimateTime": 2,
+            "priority": "Alta",
             "state": "todo"
           }
-        ],
-        "state": "inProgress"
+        ]
       },
       {
-        "state": "inProgress",
-        "progress": [],
-        "id": "0-2",
-        "completed": [],
         "blocked": [],
+        "completed": [],
+        "state": "inProgress",
+        "id": "0-2",
+        "name": "Viaje escapada de finde",
         "todo": [],
-        "name": "Viaje escapada de finde"
+        "progress": []
       }
     ],
     "name": "Sprint 41",

@@ -20,11 +20,12 @@ import {
   getDocs,
   getDoc,
   setDoc,
+  updateDoc,
 } from 'firebase/firestore'
 
 export default createStore({
   state: {
-    sprints: [2, 2],
+    sprints: [0, 0],
     currentSprint: [],
     authUser: null,
     user: null,
@@ -74,7 +75,6 @@ export default createStore({
   actions: {
     async createNewUser(context, userInfo) {
       try {
-        // const docRef = await setDoc(collection(db, 'users'), {
         await setDoc(doc(db, 'users', context.state.user.userId), userInfo)
       } catch (e) {
         console.error('Error adding document: ', e)
@@ -97,11 +97,24 @@ export default createStore({
         console.log(`${doc.id} => ${doc.data()}`)
       })
     },
+    async updateSprint(context, data) {
+      console.log('entraaa')
+      const accountId = await context.state.user.accountId
+      if (accountId) {
+        const q = doc(
+          db,
+          'accounts',
+          accountId.replace(/ /g, ''),
+          'sprints',
+          '2022-41'
+        )
+        await updateDoc(q, { objectives: data })
+      }
+    },
     async getSprints(context) {
       const accountId = await context.state.user.accountId
       // const accountId = 'Ilfq5q1BKhUTou0F5ec4'
 
-      console.log('context.state.user.accountId', accountId)
       if (accountId) {
         const q = query(
           collection(db, 'accounts', accountId.replace(/ /g, ''), 'sprints')
@@ -145,17 +158,6 @@ export default createStore({
           console.log('error ', error)
         }
       )
-
-      // const res = []
-      // const querySnapshot = await getDocs(collection(db, 'objectives'))
-      // querySnapshot.forEach((doc) => {
-      //   const object = doc.data()
-      //   object.id = doc.id
-      //   res.push(object)
-      // })
-      // context.commit('setObjectives', res)
-      // unsubscribe()
-      // console.log('res', res)
     },
 
     async signup(context, userInfo) {
@@ -262,7 +264,6 @@ export default createStore({
           ) {
             const token = await auth.currentUser.getIdToken(true)
             context.commit('setUserIdToken', token)
-            console.log('stateUserIdToken', context.state.userIdToken)
             context.commit('setAuthUser', user)
             router.push('/')
           }

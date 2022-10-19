@@ -6,7 +6,6 @@
     <!-- <h1 class="text-5xl">{{ showedUser.email }}</h1> -->
     <!-- <button @click="addUser">Crear user</button>
     <button @click="showUsers">Show user</button> -->
-
     <div class="w-full flex justify-between p-2 m-auto">
       <!-- <p>sprints{{ sprints[0].objectives }}</p> -->
       <div class="w-1/5 px-5">
@@ -112,14 +111,15 @@
 // @ is an alias to /src
 import TodoList from '@/components/todoList/TodoList'
 import TodoItem from '@/components/todoList/TodoItem'
-import { ref, computed } from 'vue'
+import { ref, computed, watchEffect, watch } from 'vue'
 import { useStore } from 'vuex'
 import InternalNavBar from '@/components/nav/InternalNavBar.vue'
 import { onBeforeMount } from 'vue'
 import draggable from 'vuedraggable'
 import mock from '@/assets/mock2.json'
+const store = useStore()
 // import NavBar from '../components/nav/NavBar.vue'
-
+let count = 0
 export default {
   // components: { InternalNavBar, draggable },
   components: {
@@ -131,9 +131,8 @@ export default {
     // await store.dispatch('getSprints')
   },
   async mounted() {
-    const store = useStore()
-    store.dispatch('getSprints')
-
+    // const store = useStore()
+    // store.dispatch('getSprints')
     // await store.dispatch('getSprints')
     // try {
     //   store.dispatch('getObjectives')
@@ -143,12 +142,56 @@ export default {
     //   console.error('Error getObjectives', e)
     // }
   },
+  // watch: {
+  //   objectives: {
+  //     async handler(newValue, oldValue) {
+  //       count++
+
+  //       if (newValue && count > 0) {
+  //         console.log('Objetivo cambiado', count)
+  //         console.log('newwwdata', newValue)
+  //         const store = useStore()
+  //         if (store) {
+  //           try {
+  //             await store.dispatch('updateSprint', newValue)
+  //           } catch (error) {
+  //             console.log('error', error)
+  //           }
+  //         } else {
+  //           console.log('No entra')
+  //         }
+  //       }
+  //     },
+  //     deep: true,
+  //   },
+  // },
 
   setup() {
-    const states = ['todo', 'progress', 'blocked', 'completed']
+    // -> logs 0
     const store = useStore()
-    const getObjectives = ref(store.state.objectives)
+    store.dispatch('getSprints')
 
+    const sprints = computed(() => store.state.sprints)
+    const objectives = computed(() => store.state.sprints[0].objectives)
+
+    // const objectives = ref(store.state.sprints[0].objectives)
+    watch(
+      () => sprints.value[0].objectives,
+      (newValue, oldValue) => {
+        count++
+        if (newValue && count > 1) {
+          console.log('newValue', newValue)
+          try {
+            store.dispatch('updateSprint', newValue)
+            console.log('Holaaa')
+          } catch (e) {
+            console.error('Error getAppUsers', e)
+          }
+        }
+      },
+      { deep: true }
+    )
+    const states = ['todo', 'progress', 'blocked', 'completed']
     async function getToDos() {
       try {
         await store.dispatch('getSprints')
@@ -165,7 +208,7 @@ export default {
     }
 
     const userDisplayName = ref(store.state.user.displayName)
-    const sprints = ref(store.getters['getterSprints'])
+    // const sprints = ref(store.getters['getterSprints'])
     // const sprints = ref(store.state.sprints)
     const userAccountId = ref(store.state.user.accountId)
     const authUser = ref(store.state.authUser)
@@ -173,6 +216,7 @@ export default {
     const showUsers = async () => {
       try {
         store.dispatch('getAppUsers')
+        console.log('showUser')
       } catch (e) {
         console.error('Error getAppUsers', e)
       }
@@ -183,14 +227,16 @@ export default {
     return {
       // showedUser,
       // addUser,
+      watchEffect,
+      objectives,
       states,
-      sprints: computed(() => store.state.sprints),
+      sprints,
+      // sprints: computed(() => store.state.sprints),
       userAccountId,
       showUsers,
       userDisplayName,
       authUser,
       userIdToken,
-      getObjectives,
       list,
     }
   },
