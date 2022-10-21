@@ -3,6 +3,15 @@ import { auth } from '../firebase/config'
 import { db } from '../firebase/config'
 import router from '../router'
 import {
+  addDays,
+  getTime,
+  endOfWeek,
+  startOfISOWeek,
+  endOfISOWeek,
+  getWeek,
+  formatISO,
+} from 'date-fns'
+import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
@@ -25,7 +34,20 @@ import {
 
 export default createStore({
   state: {
-    sprints: [0, 0],
+    sprints: [],
+    sprintById: {
+      objectives: [
+        // {
+        //   id: 'o-tso',
+        //   name: 'Tareas sin objetivo',
+        //   todo: [],
+        //   progress: [],
+        //   state: 'todo',
+        //   blocked: [],
+        //   completed: [],
+        // },
+      ],
+    },
     currentSprint: [],
     authUser: null,
     user: null,
@@ -39,7 +61,10 @@ export default createStore({
   mutations: {
     setSprints(state, payload) {
       state.sprints = payload
-      console.log('payload', payload)
+    },
+    setSprintById(state, payload) {
+      state.sprintById = payload
+      console.log('setSprintById', payload)
     },
     setCurrentSprint(state, payload) {
       state.currentSprint = payload
@@ -97,8 +122,27 @@ export default createStore({
         console.log(`${doc.id} => ${doc.data()}`)
       })
     },
+    async createSprint(context, data) {
+      const accountId = await context.state.user.accountId
+      if (accountId) {
+        try {
+          const docRef = await setDoc(
+            doc(
+              db,
+              'accounts',
+              accountId.replace(/ /g, ''),
+              'sprints',
+              data.id
+            ),
+            data
+          )
+          context.commit('setSprintById', data)
+        } catch (error) {
+          console.log('Create Sprint Error: ', error)
+        }
+      }
+    },
     async updateSprint(context, data) {
-      console.log('entraaa')
       const accountId = await context.state.user.accountId
       if (accountId) {
         const q = doc(
@@ -129,7 +173,6 @@ export default createStore({
               sprints.push(oneSprint)
             })
             context.commit('setSprints', sprints)
-            console.log('sprints: ', sprints[0].id)
           },
           (error) => {
             console.log('error ', error)
@@ -137,27 +180,28 @@ export default createStore({
         )
       }
     },
-    async getObjectives(context) {
-      const q = query(
-        collection(db, 'objectives'),
-        where('sprint', '==', '2022-41')
-      )
-      const unsubscribe = onSnapshot(
-        q,
-        (querySnapshot) => {
-          const objectives = []
-          querySnapshot.forEach((doc) => {
-            const oneObjective = doc.data()
-            oneObjective.id = doc.id
-            objectives.push(oneObjective)
-          })
-          console.log('objectives: ', objectives)
-          context.commit('setObjectives', objectives)
-        },
-        (error) => {
-          console.log('error ', error)
+    async getSprintById(context, sprintId) {
+      const accountId = await context.state.user.accountId
+      // const accountId = 'Ilfq5q1BKhUTou0F5ec4'
+
+      if (accountId) {
+        const docRef = doc(
+          db,
+          'accounts',
+          accountId.replace(/ /g, ''),
+          'sprints',
+          sprintId
+        )
+        const docSnap = await getDoc(docRef)
+
+        if (docSnap.exists()) {
+          console.log('Document data:', docSnap.data())
+          context.commit('setSprintById', docSnap.data())
+        } else {
+          // doc.data() will be undefined in this case
+          console.log('No such document!')
         }
-      )
+      }
     },
 
     async signup(context, userInfo) {

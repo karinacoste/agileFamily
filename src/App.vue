@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="">
+    <div id="modals"></div>
     <!-- <NavBar></NavBar> -->
     <router-view />
   </div>
@@ -22,3 +23,18 @@ export default {
   },
 }
 </script>
+<style>
+.modal {
+  width: 300px;
+  padding: 30px;
+  box-sizing: border-box;
+  background-color: #fff;
+  font-size: 20px;
+  text-align: center;
+}
+.vue-universal-modal {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+.vue-universal-modal-content {
+}
+</style>

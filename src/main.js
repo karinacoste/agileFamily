@@ -3,5 +3,13 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './assets/css/tailwind.css'
+import 'vue-universal-modal/dist/index.css'
+import VueUniversalModal from 'vue-universal-modal'
 
-createApp(App).use(store).use(router).mount('#app')
+createApp(App)
+  .use(store)
+  .use(router)
+  .use(VueUniversalModal, {
+    teleportTarget: '#modals',
+  })
+  .mount('#app')

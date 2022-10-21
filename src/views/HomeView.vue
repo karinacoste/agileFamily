@@ -1,5 +1,11 @@
 <template>
   <div class="w-full min-h-max h-full bg-gray-100">
+    <Modal v-model="isShow" :close="closeModal">
+      <div class="modal h-96">
+        <p class="text-orange-300">Hello</p>
+        <button @click="closeModal">close</button>
+      </div>
+    </Modal>
     <!-- <p class="font-bold">showedUser {{ showedUser.email }}</p> -->
     <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
     <h1 class="text-2xl font-bold ml-7 my-5">SPRINT 1 {{ userDisplayName }}</h1>
@@ -9,8 +15,16 @@
     <div class="w-full flex justify-between p-2 m-auto">
       <!-- <p>sprints{{ sprints[0].objectives }}</p> -->
       <div class="w-1/5 px-5">
-        <div class="w-full py-2 font-bold border-b-4 border-gray-300">
-          OBJETIVOS
+        <div
+          class="w-full mt-0.5 pb-1 items-center justify-between flex font-bold border-b-4 border-gray-300"
+        >
+          <div class="flex justify-center">OBJETIVOS</div>
+          <button
+            @click="showModal"
+            class="flex mb-1 py-0.5 px-3 items-center border border-gray-500 text-xl"
+          >
+            +
+          </button>
         </div>
       </div>
       <!-- //////////////// -->
@@ -46,11 +60,10 @@
         </div>
       </div>
     </div>
-
     <!-- // ////////////////////////////////// -->
-
+    userAccountId {{ userAccountId }}
     <draggable
-      v-model="sprints[0].objectives"
+      v-model="sprintById.objectives"
       item-key="id"
       class="w-full h-full"
       group="my-group"
@@ -111,81 +124,84 @@
 // @ is an alias to /src
 import TodoList from '@/components/todoList/TodoList'
 import TodoItem from '@/components/todoList/TodoItem'
-import { ref, computed, watchEffect, watch } from 'vue'
+import { ref, computed, watchEffect, watch, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import InternalNavBar from '@/components/nav/InternalNavBar.vue'
 import { onBeforeMount } from 'vue'
 import draggable from 'vuedraggable'
 import mock from '@/assets/mock2.json'
+import { getCurrentWeekNumber, getWeekStart } from '@/assets/js/utils.js'
+import {
+  addDays,
+  getTime,
+  endOfWeek,
+  startOfISOWeek,
+  endOfISOWeek,
+  getWeek,
+  formatISO,
+} from 'date-fns'
 const store = useStore()
 // import NavBar from '../components/nav/NavBar.vue'
+
 let count = 0
-export default {
+export default defineComponent({
   // components: { InternalNavBar, draggable },
   components: {
     InternalNavBar,
     draggable,
   },
-  async beforeCreate() {
-    // const store = useStore()
-    // await store.dispatch('getSprints')
-  },
-  async mounted() {
-    // const store = useStore()
-    // store.dispatch('getSprints')
-    // await store.dispatch('getSprints')
-    // try {
-    //   store.dispatch('getObjectives')
-    //   console.log('Holaaa')
-    //   console.log('store.state', store.state.objectives)
-    // } catch (e) {
-    //   console.error('Error getObjectives', e)
-    // }
-  },
-  // watch: {
-  //   objectives: {
-  //     async handler(newValue, oldValue) {
-  //       count++
-
-  //       if (newValue && count > 0) {
-  //         console.log('Objetivo cambiado', count)
-  //         console.log('newwwdata', newValue)
-  //         const store = useStore()
-  //         if (store) {
-  //           try {
-  //             await store.dispatch('updateSprint', newValue)
-  //           } catch (error) {
-  //             console.log('error', error)
-  //           }
-  //         } else {
-  //           console.log('No entra')
-  //         }
-  //       }
-  //     },
-  //     deep: true,
-  //   },
-  // },
 
   setup() {
-    // -> logs 0
     const store = useStore()
-    store.dispatch('getSprints')
 
+    let currentDate = new Date()
+    let currentYear = currentDate.getFullYear()
+    const weekNumber = getWeek(new Date())
+
+    try {
+      store.dispatch('getSprintById', `${currentYear}-${weekNumber}`)
+    } catch (error) {
+      console.log('error', error)
+    }
+    // const dateTests = getDateOfWeek(weekNumber, currentYear.value)
+    // const dateTests = weekNumber
+    const currentWeekStart = getWeekStart(weekNumber, currentYear.value)
+    const daysPerWeeks = new Date(2022, 0, 295)
+    const getDate = daysPerWeeks.getDate()
+    const end = startOfISOWeek(currentDate)
+    // const dateTests = getWeek(currentDate, { weekStartsOn: 1 })
+    //const dateTests = formatISO(endOfISOWeek(currentDate), { format: 'basic' })
+    const firstDayOfWeek = getTime(new Date(startOfISOWeek(currentDate)))
+    const dateTests = addDays(new Date(firstDayOfWeek), 6)
+
+    const birthday = new Date()
+
+    store.dispatch('getSprints')
+    const sprintById = computed(() => store.state.sprintById)
     const sprints = computed(() => store.state.sprints)
     const objectives = computed(() => store.state.sprints[0].objectives)
 
     // const objectives = ref(store.state.sprints[0].objectives)
     watch(
-      () => sprints.value[0].objectives,
+      () => sprintById.value.objectives,
       (newValue, oldValue) => {
         count++
         if (newValue && count > 1) {
           console.log('newValue', newValue)
-          try {
-            store.dispatch('updateSprint', newValue)
-            console.log('Holaaa')
-          } catch (e) {
-            console.error('Error getAppUsers', e)
+          if (sprintById.value.id) {
+            try {
+              store.dispatch('updateSprint', newValue)
+              console.log('Holaaa')
+            } catch (e) {
+              console.error('Error getAppUsers', e)
+            }
+          } else {
+            const data = {
+              id: `${currentYear}-${weekNumber}`,
+              name: `Sprint ${weekNumber}`,
+              objectives: newValue,
+            }
+            store.dispatch('createSprint', data)
           }
         }
       },
@@ -221,12 +237,25 @@ export default {
         console.error('Error getAppUsers', e)
       }
     }
+    const isShow = ref(false)
 
-    const list = ref(mock)
+    function showModal() {
+      isShow.value = true
+    }
+
+    function closeModal() {
+      isShow.value = false
+    }
 
     return {
       // showedUser,
       // addUser,
+      isShow,
+      showModal,
+      closeModal,
+      sprintById,
+      dateTests,
+      currentYear,
       watchEffect,
       objectives,
       states,
@@ -237,8 +266,25 @@ export default {
       userDisplayName,
       authUser,
       userIdToken,
-      list,
     }
   },
-}
+})
 </script>
+<style scoped>
+.modal {
+  width: 300px;
+  padding: 30px;
+  box-sizing: border-box;
+  background-color: #fff;
+  font-size: 20px;
+  text-align: center;
+}
+.vue-universal-modal {
+  /* Change dimmed color */
+  background-color: rgba(255, 255, 0, 0.3) !important;
+}
+.vue-universal-modal-content {
+  /* Align to top (flex-direction property value is set to column) */
+  background-color: rgba(255, 255, 0, 0.3) !important;
+}
+</style>
