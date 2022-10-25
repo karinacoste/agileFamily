@@ -44,9 +44,7 @@ export default {
   setup() {
     const email = ref('')
     const password = ref('')
-    const handleSubmit = () => {
-      console.log(email.value, password.value)
-    }
+    const handleSubmit = () => {}
     return { handleSubmit, email, password }
   },
 }

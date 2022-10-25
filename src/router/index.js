@@ -38,19 +38,16 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   if (to.path === '/ExternalHomeView' && auth.currentUser) {
-    console.log('ExternalHomeView', auth.currentUser)
     next('/')
     return
   }
 
   if (to.path === '/LoginView' && auth.currentUser) {
-    console.log('LoginView', auth.currentUser)
     next('/')
     return
   }
 
   if (to.path === '/SignupView' && auth.currentUser) {
-    console.log('signupView', auth.currentUser)
     next('/')
     return
   }
@@ -58,13 +55,11 @@ router.beforeEach(async (to, from, next) => {
   if (
     to.matched.some((record) => record.meta.requiresAuth && !auth.currentUser)
   ) {
-    console.log('Entra', auth.currentUser)
     // onAuthStateChanged(auth, (user) => {
     //   if (!user) {
     //     //   // User is signed in, see docs for a list of available properties
     //     //   // https://firebase.google.com/docs/reference/js/firebase.User
     //     next('/ExternalHomeView')
-    //     console.log('1', user)
     //     return
     //   }
     // })
@@ -75,13 +70,11 @@ router.beforeEach(async (to, from, next) => {
     // onAuthStateChanged(auth, (user) => {
     //   if (!user) {
     //     next('/ExternalHomeView')
-    //     console.log('1', auth.currentUser)
     //     return
     //   }
     // })
 
     next('/ExternalHomeView')
-    //     console.log('1', user)
     return
   }
 

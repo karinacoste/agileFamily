@@ -1,9 +1,14 @@
 <template>
   <div class="w-full min-h-max h-full bg-gray-100">
     <Modal v-model="isShow" :close="closeModal">
-      <div class="modal h-96">
-        <p class="text-orange-300">Hello</p>
-        <button @click="closeModal">close</button>
+      <div class="modal w-3/6 p-12">
+        <generic-modal
+          title="Añadir nuevo objetivo"
+          componentName="NewObjective"
+          componentPath="components/forms"
+          :modalData="modalData"
+          @onCloseModal="closeModal"
+        ></generic-modal>
       </div>
     </Modal>
     <!-- <p class="font-bold">showedUser {{ showedUser.email }}</p> -->
@@ -20,7 +25,7 @@
         >
           <div class="flex justify-center">OBJETIVOS</div>
           <button
-            @click="showModal"
+            @click="showObjectiveModal"
             class="flex mb-1 py-0.5 px-3 items-center border border-gray-500 text-xl"
           >
             +
@@ -60,8 +65,8 @@
         </div>
       </div>
     </div>
+
     <!-- // ////////////////////////////////// -->
-    userAccountId {{ userAccountId }}
     <draggable
       v-model="sprintById.objectives"
       item-key="id"
@@ -122,15 +127,19 @@
 
 <script>
 // @ is an alias to /src
-import TodoList from '@/components/todoList/TodoList'
-import TodoItem from '@/components/todoList/TodoItem'
-import { ref, computed, watchEffect, watch, defineComponent } from 'vue'
+import GenericModal from '@/components/modals/GenericModal.vue'
+import {
+  ref,
+  computed,
+  watchEffect,
+  watch,
+  defineComponent,
+  defineAsyncComponent,
+} from 'vue'
 import { useStore } from 'vuex'
 import InternalNavBar from '@/components/nav/InternalNavBar.vue'
-import { onBeforeMount } from 'vue'
 import draggable from 'vuedraggable'
-import mock from '@/assets/mock2.json'
-import { getCurrentWeekNumber, getWeekStart } from '@/assets/js/utils.js'
+import { getWeekStart } from '@/assets/js/utils.js'
 import {
   addDays,
   getTime,
@@ -138,6 +147,7 @@ import {
   startOfISOWeek,
   endOfISOWeek,
   getWeek,
+  getISOWeek,
   formatISO,
 } from 'date-fns'
 const store = useStore()
@@ -149,23 +159,38 @@ export default defineComponent({
   components: {
     InternalNavBar,
     draggable,
+    GenericModal,
   },
 
   setup() {
     const store = useStore()
-
+    let modalData = computed(() => {
+      let data = {}
+      if (sprintById.value.id) {
+        data.sprintId = sprintById.value.id
+      }
+      return data
+    })
+    const showObjectiveModal = () => {
+      showModal()
+    }
+    const isShow = ref(false)
+    function showModal() {
+      isShow.value = true
+    }
+    function closeModal() {
+      isShow.value = false
+    }
     let currentDate = new Date()
     let currentYear = currentDate.getFullYear()
-    const weekNumber = getWeek(new Date())
-
+    const weekNumber = ref(getISOWeek(new Date()))
     try {
-      store.dispatch('getSprintById', `${currentYear}-${weekNumber}`)
+      store.dispatch('getSprintById', `${currentYear}-${weekNumber.value}`)
     } catch (error) {
       console.log('error', error)
     }
     // const dateTests = getDateOfWeek(weekNumber, currentYear.value)
     // const dateTests = weekNumber
-    const currentWeekStart = getWeekStart(weekNumber, currentYear.value)
     const daysPerWeeks = new Date(2022, 0, 295)
     const getDate = daysPerWeeks.getDate()
     const end = startOfISOWeek(currentDate)
@@ -187,18 +212,17 @@ export default defineComponent({
       (newValue, oldValue) => {
         count++
         if (newValue && count > 1) {
-          console.log('newValue', newValue)
           if (sprintById.value.id) {
             try {
               store.dispatch('updateSprint', newValue)
-              console.log('Holaaa')
+              console.log('updateSprint from watch objectives', count)
             } catch (e) {
               console.error('Error getAppUsers', e)
             }
           } else {
             const data = {
-              id: `${currentYear}-${weekNumber}`,
-              name: `Sprint ${weekNumber}`,
+              id: `${currentYear}-${weekNumber.value}`,
+              name: `Sprint ${weekNumber.value}`,
               objectives: newValue,
             }
             store.dispatch('createSprint', data)
@@ -208,21 +232,6 @@ export default defineComponent({
       { deep: true }
     )
     const states = ['todo', 'progress', 'blocked', 'completed']
-    async function getToDos() {
-      try {
-        await store.dispatch('getSprints')
-        console.log('Holaaa')
-        prueba = [9, 9]
-      } catch (e) {
-        console.error('Error getAppUsers', e)
-      }
-      return [1, 2, 3]
-    }
-    async function changeState(data, state) {
-      console.log('ccc', data[0].id, state)
-      console.log('object', data[0])
-    }
-
     const userDisplayName = ref(store.state.user.displayName)
     // const sprints = ref(store.getters['getterSprints'])
     // const sprints = ref(store.state.sprints)
@@ -232,24 +241,17 @@ export default defineComponent({
     const showUsers = async () => {
       try {
         store.dispatch('getAppUsers')
-        console.log('showUser')
       } catch (e) {
         console.error('Error getAppUsers', e)
       }
-    }
-    const isShow = ref(false)
-
-    function showModal() {
-      isShow.value = true
-    }
-
-    function closeModal() {
-      isShow.value = false
     }
 
     return {
       // showedUser,
       // addUser,
+      modalData,
+      showObjectiveModal,
+      weekNumber,
       isShow,
       showModal,
       closeModal,
@@ -272,12 +274,9 @@ export default defineComponent({
 </script>
 <style scoped>
 .modal {
-  width: 300px;
-  padding: 30px;
-  box-sizing: border-box;
-  background-color: #fff;
-  font-size: 20px;
-  text-align: center;
+}
+.modal h1 {
+  font-size: 30px;
 }
 .vue-universal-modal {
   /* Change dimmed color */

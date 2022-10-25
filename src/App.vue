@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="h-full">
     <div id="modals"></div>
     <!-- <NavBar></NavBar> -->
     <router-view />

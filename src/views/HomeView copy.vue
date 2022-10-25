@@ -131,8 +131,6 @@ export default {
     const store = useStore()
     try {
       store.dispatch('setSprints')
-      console.log('Holaaaaass')
-      console.log('store.state', store.state.sprints)
     } catch (e) {
       console.error('Error getObjectives', e)
     }
