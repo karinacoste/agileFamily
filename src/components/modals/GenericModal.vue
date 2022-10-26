@@ -1,25 +1,27 @@
 <template>
   <div>
-    <h1 class="text-left text-3xl font-bold">{{ title }}</h1>
-    <modalComponent
-      :is="modalComponent"
-      :modalData="modalData"
-      @onCloseModal="callCloseModal"
-    />
+    <h1 class="text-left text-3xl font-bold">{{ modalTitle }}</h1>
+    <keep-alive>
+      <component
+        :is="modalComponent"
+        @onSaveObjective="saveObjective"
+        :modalData="modalData"
+      />
+    </keep-alive>
   </div>
 </template>
 
 <script>
 import { computed, defineAsyncComponent } from '@vue/runtime-core'
-// import InputField from '../forms/commons/InputField.vue'
+
+import ObjectiveForm from '@/components/forms/ObjectiveForm.vue'
+
 export default {
   components: {
-    modalComponent: defineAsyncComponent(() => {
-      return import(`@/components/forms/ObjectiveForm.vue`)
-    }),
+    ObjectiveForm,
   },
   props: {
-    title: {
+    modalTitle: {
       type: String,
       default: '',
     },
@@ -41,10 +43,14 @@ export default {
     },
   },
   setup(props, context) {
-    function callCloseModal() {
-      context.emit('onCloseModal')
+    const modalComponent = computed(() => {
+      let modalContent = props.componentName
+      return modalContent
+    })
+    function saveObjective(payload) {
+      context.emit('onSaveObjective', payload)
     }
-    return { callCloseModal }
+    return { modalComponent, saveObjective }
   },
 }
 </script>

@@ -3,11 +3,11 @@
     <Modal v-model="isShow" :close="closeModal">
       <div class="modal w-3/6 p-12">
         <generic-modal
-          title="Añadir nuevo objetivo"
-          componentName="NewObjective"
-          componentPath="components/forms"
+          :modalTitle="modalTitle"
+          :componentName="modalComponent"
           :modalData="modalData"
-          @onCloseModal="closeModal"
+          @onSaveObjective="saveObjective"
+          @onCancelModal="closeModal"
         ></generic-modal>
       </div>
     </Modal>
@@ -25,7 +25,12 @@
         >
           <div class="flex justify-center">OBJETIVOS</div>
           <button
-            @click="showObjectiveModal"
+            @click="
+              showGenericModal('Nuevo objetivo', 'ObjectiveForm', {
+                name: '',
+                description: '',
+              })
+            "
             class="flex mb-1 py-0.5 px-3 items-center border border-gray-500 text-xl"
           >
             +
@@ -65,7 +70,6 @@
         </div>
       </div>
     </div>
-
     <!-- // ////////////////////////////////// -->
     <draggable
       v-model="sprintById.objectives"
@@ -81,7 +85,17 @@
             <div
               class="w-full h-48 px-2 font-semibold text-lg hover:cursor-move"
             >
-              {{ item.name }}
+              <span
+                @click="
+                  showGenericModal('Editar objetivo', 'ObjectiveForm', {
+                    id: item.id,
+                    name: item.name,
+                    description: item.description,
+                  })
+                "
+              >
+                {{ item.name }}</span
+              >
             </div>
           </div>
           <div v-for="state in states" :key="state" class="w-1/5 px-5">
@@ -129,12 +143,14 @@
 // @ is an alias to /src
 import GenericModal from '@/components/modals/GenericModal.vue'
 import {
+  data,
   ref,
   computed,
   watchEffect,
   watch,
   defineComponent,
   defineAsyncComponent,
+  reactive,
 } from 'vue'
 import { useStore } from 'vuex'
 import InternalNavBar from '@/components/nav/InternalNavBar.vue'
@@ -164,23 +180,6 @@ export default defineComponent({
 
   setup() {
     const store = useStore()
-    let modalData = computed(() => {
-      let data = {}
-      if (sprintById.value.id) {
-        data.sprintId = sprintById.value.id
-      }
-      return data
-    })
-    const showObjectiveModal = () => {
-      showModal()
-    }
-    const isShow = ref(false)
-    function showModal() {
-      isShow.value = true
-    }
-    function closeModal() {
-      isShow.value = false
-    }
     let currentDate = new Date()
     let currentYear = currentDate.getFullYear()
     const weekNumber = ref(getISOWeek(new Date()))
@@ -189,6 +188,53 @@ export default defineComponent({
     } catch (error) {
       console.log('error', error)
     }
+    const sprintById = computed(() => store.state.sprintById)
+    let modalTitle = ref('')
+    let modalComponent = ref('')
+    let modalData = ref({})
+
+    // const showGenericModal = (
+    //   modalTitle,
+    //   componentName,
+    //   componentPath,
+    //   modalData
+    // ) => {
+    //   return { modalTitle, componentName, componentPath, modalData }
+    // }
+
+    function showGenericModal(title, component, data) {
+      console.log('component')
+      modalTitle.value = title
+      modalComponent.value = component
+      modalData.value = data
+      showModal()
+    }
+
+    function saveObjective(objective) {
+      const getObjectiveIndex = sprintById.value.objectives.findIndex(
+        (oneObjective) => oneObjective.id === objective.id
+      )
+      if (getObjectiveIndex >= 0) {
+        // Si el objetivo ya existe en el sprint, se actualiza
+        sprintById.value.objectives[getObjectiveIndex].name = objective.name
+        sprintById.value.objectives[getObjectiveIndex].description =
+          objective.description
+      } else {
+        // Si es un objetivo nuevo se añade al comienzo del array de objetivos
+        sprintById.value.objectives.unshift(objective)
+      }
+
+      closeModal()
+    }
+
+    const isShow = ref(false)
+    function showModal() {
+      isShow.value = true
+    }
+    function closeModal() {
+      isShow.value = false
+    }
+
     // const dateTests = getDateOfWeek(weekNumber, currentYear.value)
     // const dateTests = weekNumber
     const daysPerWeeks = new Date(2022, 0, 295)
@@ -202,7 +248,6 @@ export default defineComponent({
     const birthday = new Date()
 
     store.dispatch('getSprints')
-    const sprintById = computed(() => store.state.sprintById)
     const sprints = computed(() => store.state.sprints)
     const objectives = computed(() => store.state.sprints[0].objectives)
 
@@ -213,6 +258,8 @@ export default defineComponent({
         count++
         if (newValue && count > 1) {
           if (sprintById.value.id) {
+            // Se comprueba si el sprint actual ya está guardado en la base de datos,
+            // si no hay sprintId se crea un nuevo sprint
             try {
               store.dispatch('updateSprint', newValue)
               console.log('updateSprint from watch objectives', count)
@@ -249,8 +296,11 @@ export default defineComponent({
     return {
       // showedUser,
       // addUser,
+      saveObjective,
+      modalTitle,
+      modalComponent,
       modalData,
-      showObjectiveModal,
+      showGenericModal,
       weekNumber,
       isShow,
       showModal,
@@ -273,8 +323,6 @@ export default defineComponent({
 })
 </script>
 <style scoped>
-.modal {
-}
 .modal h1 {
   font-size: 30px;
 }

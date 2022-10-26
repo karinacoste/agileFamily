@@ -52,6 +52,7 @@ export default createStore({
     setSprints(state, payload) {
       state.sprints = payload
     },
+
     setSprintById(state, payload) {
       state.sprintById = payload
     },
@@ -78,12 +79,6 @@ export default createStore({
     },
     setAuthIsready(state, payload) {
       state.authIsReady = payload
-    },
-    clearUser(state) {
-      state.user = null
-    },
-    clearAuthUser(state) {
-      state.authUser = null
     },
   },
   actions: {
@@ -123,8 +118,8 @@ export default createStore({
       querySnapshot.forEach((doc) => {})
     },
     async createSprint(context, data) {
-      const accountId = await context.state.user.accountId
-      if (accountId) {
+      try {
+        const accountId = await context.state.user.accountId
         try {
           const docRef = doc(
             db,
@@ -138,6 +133,8 @@ export default createStore({
         } catch (error) {
           console.log('Create Sprint Error: ', error)
         }
+      } catch (error) {
+        console.log('Error create Sprint: ', error)
       }
     },
     async updateSprint(context, data) {
@@ -178,6 +175,7 @@ export default createStore({
         )
       }
     },
+
     async getSprintById(context, sprintId) {
       const accountId = await context.state.user.accountId
       // const accountId = 'Ilfq5q1BKhUTou0F5ec4'
@@ -196,6 +194,7 @@ export default createStore({
           context.commit('setSprintById', docSnap.data())
         } else {
           // doc.data() will be undefined in this case
+          context.commit('restoreSprintById')
           console.log('No such document!')
         }
       }
@@ -231,6 +230,8 @@ export default createStore({
             newAccountInfo
           )
           if (docRef.id) {
+            // si se ha creado una nueva cuenta, se actualiza el estado accountId
+            context.commit('setAccountId', docRef.id)
             try {
               await context.dispatch('createNewUser', {
                 displayName,
@@ -263,19 +264,23 @@ export default createStore({
       }
     },
     async login(context, { email, password }) {
+      context.commit('setSprintById', { objectives: [] })
       const res = await signInWithEmailAndPassword(auth, email, password)
       if (res) {
         // context.commit('setUser', res.user)
         context.commit('setAuthUser', auth.currentUser)
         await context.dispatch('fetchUserById', auth.currentUser.uid)
+        console.log(auth.currentUser.uid)
       } else {
         throw new Error('could not complete login')
       }
     },
     async logout(context) {
       const res = await signOut(auth)
+      context.commit('setAccountId', null)
       context.commit('setAuthUser', null)
       context.commit('setUser', null)
+      context.commit('setSprintById', { objectives: [] })
       // window.localStorage.clear()
       router.push('/ExternalHomeView')
     },
@@ -293,8 +298,8 @@ export default createStore({
     async fetchAuthUser(context) {
       onAuthStateChanged(auth, async (user) => {
         if (user === null) {
-          context.commit('clearUser')
-          context.commit('clearAuthUser')
+          context.commit('setUser', null)
+          context.commit('setAuthUser', null)
         } else {
           context.commit('setAuthUser', user)
           await context.dispatch('fetchUserById', user.uid)

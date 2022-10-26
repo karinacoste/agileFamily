@@ -35,6 +35,4 @@ export default {
 .vue-universal-modal {
   background-color: rgba(0, 0, 0, 0.5) !important;
 }
-.vue-universal-modal-content {
-}
 </style>

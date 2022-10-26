@@ -10,7 +10,6 @@
     <!-- // ///////////////////////////////// -->
 
     <label class="ml-1 mt-4 font-semibold">Descripción</label>
-    description{{ description }}
     <textarea
       placeholder="Añade una descripción"
       class="border h-48 w-full mt-1 p-2 pl-3 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
@@ -44,19 +43,26 @@ export default {
     },
   },
   setup(props, context) {
-    const name = ref('')
-    const description = ref('')
+    const name = ref(props.modalData.name)
+    const description = ref(props.modalData.description)
     const weekNumber = ref(getISOWeek(new Date()))
     let currentDate = new Date()
     let currentYear = currentDate.getFullYear()
     const store = useStore()
     const sprintById = ref(store.state.sprintById)
+
     const sprintId = ref(store.state.sprintById.id)
     // if (props.modalData !== null) {
     // }
     const saveObjective = () => {
+      let id = ''
+      if (props.modalData.id) {
+        id = props.modalData.id
+      } else {
+        id = uuidv4()
+      }
       let newObjective = {
-        id: uuidv4(),
+        id: id,
         name: name.value,
         description: description.value,
         state: 'todo',
@@ -65,27 +71,16 @@ export default {
         blocked: [],
         completed: [],
       }
-      if (!sprintId.value) {
-        const sprintInfo = {
-          id: `${currentYear}-${weekNumber.value}`.replace(/ /g, ''),
-          name: `Sprint ${weekNumber.value}`,
-          objectives: [newObjective],
-        }
-        try {
-          store.dispatch('createSprint', sprintInfo)
-        } catch (error) {
-          console.bug(error)
-        }
-      } else {
-        const newArrayObjectives =
-          sprintById.value.objectives.unshift(newObjective)
-        store.dispatch('updateSprint', newArrayObjectives)
-        console.log('addObjective', sprintById.value.objectives)
-      }
-
-      context.emit('onCloseModal')
+      console.log('newObjective', newObjective)
+      context.emit('onSaveObjective', newObjective)
     }
-    return { saveObjective, name, description, sprintId, sprintById }
+    return {
+      saveObjective,
+      name,
+      description,
+      sprintId,
+      sprintById,
+    }
   },
 }
 </script>
