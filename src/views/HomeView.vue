@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full min-h-max h-full bg-gray-100">
+  <div class="w-full h-full min-h-screen bg-gray-100">
     <Modal v-model="isShow" :close="closeModal">
       <div class="modal w-3/6 p-12">
         <generic-modal
@@ -7,10 +7,12 @@
           :componentName="modalComponent"
           :modalData="modalData"
           @onSaveObjective="saveObjective"
+          @onSaveTask="saveTask"
           @onCancelModal="closeModal"
         ></generic-modal>
       </div>
     </Modal>
+
     <!-- <p class="font-bold">showedUser {{ showedUser.email }}</p> -->
     <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
     <h1 class="text-2xl font-bold ml-7 my-5">SPRINT 1 {{ userDisplayName }}</h1>
@@ -85,7 +87,8 @@
             <div
               class="w-full h-48 px-2 font-semibold text-lg hover:cursor-move"
             >
-              <span
+              <div
+                class="flex justify-between items-start cursor-pointer"
                 @click="
                   showGenericModal('Editar objetivo', 'ObjectiveForm', {
                     id: item.id,
@@ -94,8 +97,31 @@
                   })
                 "
               >
-                {{ item.name }}</span
+                <div class="flex">
+                  {{ item.name }}
+                </div>
+                <div class="flex">
+                  <OptionsIcon class="fill-current w-5 pt-1" />
+                </div>
+              </div>
+              <button
+                @click="
+                  showGenericModal('Nueva tarea', 'taskForm', {
+                    objectiveId: item.id,
+                    state: 'todo',
+                    allUsers: allUsersInfObject,
+                    userAssigned: '',
+                    taskId: '',
+                    name: '',
+                    estimateTime: 0,
+                    priority: '',
+                    description: '',
+                  })
+                "
+                class="flex mb-1 py-1 mt-4 px-3 items-center border border-gray-500 text-sm"
               >
+                + Añadir tarea
+              </button>
             </div>
           </div>
           <div v-for="state in states" :key="state" class="w-1/5 px-5">
@@ -110,19 +136,25 @@
                   ><div
                     class="list-group-item bg-white shadow-md mb-6 px-6 py-4 hover:cursor-move"
                   >
-                    <div class="font-semibold text-lg pb-12">
-                      {{ item.id }} - {{ item.name }}
+                    <div class="flex items-center pb-3">
+                      <span>
+                        <img :src="userImage(item.assigned)" alt="user image"
+                      /></span>
+                      <div class="ml-3 font-semibold">
+                        <!-- <span class="font-normal"> Asignada a:</span> -->
+                        {{ userAssignedName(item.assigned) }}
+                      </div>
                     </div>
-                    <div class="flex items-center pb-3 pr-4">
-                      <!-- <img
-                      :src="
-                        require(`@/assets/images/users/${element.userImg}.png`)
-                      "
-                      alt="user image"
-                    /> -->
-
-                      <span class="ml-2">{{ item.priority }}</span>
-                      <span class="ml-2">{{ item.estimateTime }}</span>
+                    <div class="font-semibold text-lg pl-1 pb-4">
+                      {{ item.name }}
+                    </div>
+                    <div class="flex items-center pb-11 pr-4">
+                      <span class="ml-2">Prioridad: </span>
+                      <span class="ml-2 font-bold"> {{ item.priority }}</span>
+                      <span class="ml-4">Tiempo: </span>
+                      <span class="ml-2 font-bold"
+                        >{{ item.estimateTime }}h</span
+                      >
                     </div>
                   </div>
                 </template>
@@ -154,6 +186,8 @@ import {
 } from 'vue'
 import { useStore } from 'vuex'
 import InternalNavBar from '@/components/nav/InternalNavBar.vue'
+import OptionsIcon from '@/components/icons/OptionsIcon.vue'
+// import DynamicIcons from '@/components/icons/DynamicIcons.vue'
 import draggable from 'vuedraggable'
 import { getWeekStart } from '@/assets/js/utils.js'
 import {
@@ -176,6 +210,7 @@ export default defineComponent({
     InternalNavBar,
     draggable,
     GenericModal,
+    OptionsIcon,
   },
 
   setup() {
@@ -183,27 +218,41 @@ export default defineComponent({
     let currentDate = new Date()
     let currentYear = currentDate.getFullYear()
     const weekNumber = ref(getISOWeek(new Date()))
-    try {
-      store.dispatch('getSprintById', `${currentYear}-${weekNumber.value}`)
-    } catch (error) {
-      console.log('error', error)
+    allAccountInformation()
+    let isWaiting = computed(() => store.getters.getterIsWaiting)
+    async function allAccountInformation() {
+      try {
+        await store.dispatch('fetchAllAccountInformation')
+        await store.dispatch(
+          'getSprintById',
+          `${currentYear}-${weekNumber.value}`
+        )
+        console.log('allAccooun')
+      } catch (error) {
+        console.log(error)
+      }
     }
+    function userImage(userId) {
+      return userId !== ''
+        ? require('@/assets/images/users/' +
+            allUsersInfObject.value[userId].img +
+            '.png')
+        : require('@/assets/images/users/generic-photo.png')
+    }
+    function userAssignedName(userId) {
+      return userId !== ''
+        ? allUsersInfObject.value[userId].displayName
+        : 'Sin Asignar'
+    }
+    let allUsersInfObject = computed(() => store.getters.getterUsersInfo)
+    let allUsers = computed(() => store.state.allUsersInformations)
+    // const priorities = computed(() => store.state.priorities)
     const sprintById = computed(() => store.state.sprintById)
     let modalTitle = ref('')
     let modalComponent = ref('')
     let modalData = ref({})
 
-    // const showGenericModal = (
-    //   modalTitle,
-    //   componentName,
-    //   componentPath,
-    //   modalData
-    // ) => {
-    //   return { modalTitle, componentName, componentPath, modalData }
-    // }
-
-    function showGenericModal(title, component, data) {
-      console.log('component')
+    async function showGenericModal(title, component, data) {
       modalTitle.value = title
       modalComponent.value = component
       modalData.value = data
@@ -226,7 +275,32 @@ export default defineComponent({
 
       closeModal()
     }
+    function saveTask(task) {
+      // Se obtiene el index del objetivo al que pertenece la tarea
+      const getObjectiveIndex = sprintById.value.objectives.findIndex(
+        (oneObjective) => oneObjective.id === task.objectiveId
+      )
 
+      // Si el objetivo existe se busca dentro del estado al que pertenece la tarea si ya existe una con el mismo id
+      const getTaskIndex = sprintById.value.objectives[getObjectiveIndex][
+        task.state
+      ].findIndex((oneTask) => oneTask.id === task.taskProperties.id)
+
+      if (getTaskIndex >= 0) {
+        sprintById.value.objectives[getObjectiveIndex].task.state[
+          getTaskIndex
+        ] = task.taskProperties
+      } else {
+        console.log('Empieza', getObjectiveIndex)
+        sprintById.value.objectives[getObjectiveIndex][task.state].unshift(
+          task.taskProperties
+        )
+        console.log('Enrtra', task.taskProperties)
+      }
+      // Si es un objetivo nuevo se añade al comienzo del array de objetivos
+
+      closeModal()
+    }
     const isShow = ref(false)
     function showModal() {
       isShow.value = true
@@ -246,8 +320,6 @@ export default defineComponent({
     const dateTests = addDays(new Date(firstDayOfWeek), 6)
 
     const birthday = new Date()
-
-    store.dispatch('getSprints')
     const sprints = computed(() => store.state.sprints)
     const objectives = computed(() => store.state.sprints[0].objectives)
 
@@ -285,18 +357,22 @@ export default defineComponent({
     const userAccountId = ref(store.state.user.accountId)
     const authUser = ref(store.state.authUser)
     const userIdToken = ref(store.state.userIdToken)
-    const showUsers = async () => {
-      try {
-        store.dispatch('getAppUsers')
-      } catch (e) {
-        console.error('Error getAppUsers', e)
-      }
-    }
+    // const showUsers = async () => {
+    //   try {
+    //     store.dispatch('getAppUsers')
+    //   } catch (e) {
+    //     console.error('Error getAppUsers', e)
+    //   }
+    // }
 
     return {
-      // showedUser,
-      // addUser,
+      userAssignedName,
+      isWaiting,
+      userImage,
+      allUsers,
+      allUsersInfObject,
       saveObjective,
+      saveTask,
       modalTitle,
       modalComponent,
       modalData,
@@ -314,7 +390,7 @@ export default defineComponent({
       sprints,
       // sprints: computed(() => store.state.sprints),
       userAccountId,
-      showUsers,
+      // showUsers,
       userDisplayName,
       authUser,
       userIdToken,

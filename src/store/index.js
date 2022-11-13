@@ -2,6 +2,7 @@ import { createStore, storeKey } from 'vuex'
 import { auth } from '../firebase/config'
 import { db } from '../firebase/config'
 import router from '../router'
+import UsersTransformer from '@/transformers/UsersTransformer'
 import {
   addDays,
   getTime,
@@ -34,6 +35,7 @@ import {
 
 export default createStore({
   state: {
+    allUsersInformations: [],
     sprints: [],
     sprintById: {
       objectives: [],
@@ -46,13 +48,24 @@ export default createStore({
     authIsReady: false,
     objectives: [],
     accountId: null,
+    account: {},
+    priorities: [],
+    waiting: false,
   },
   getters: {},
   mutations: {
+    setAllUsersInformation(state, payload) {
+      state.allUsersInformations = payload
+    },
+    setIsWaiting(state, payload) {
+      state.waiting = payload
+    },
     setSprints(state, payload) {
       state.sprints = payload
     },
-
+    setAccount(state, payload) {
+      state.account = payload
+    },
     setSprintById(state, payload) {
       state.sprintById = payload
     },
@@ -80,21 +93,25 @@ export default createStore({
     setAuthIsready(state, payload) {
       state.authIsReady = payload
     },
+    setPriorities(state, payload) {
+      state.priorities = payload
+    },
   },
   actions: {
-    // async addObjective(context, objective) {
-    //   const accountId = await context.state.user.accountId
-    //   if (accountId) {
-    //     const q = doc(
-    //       db,
-    //       'accounts',
-    //       accountId.replace(/ /g, ''),
-    //       'sprints',
-    //       context.state.sprintById.id
-    //     )
-    //     await updateDoc(q, { objectives: data })
-    //   }
-    // },
+    async getPriorities(context) {
+      try {
+        const docRef = doc(db, 'sprintFeatures', 'priorities')
+        const docSnap = await getDoc(docRef)
+        if (docSnap.exists()) {
+          console.log('allPriorities', docSnap.data())
+          context.commit('setPriorities', docSnap.data().priorities)
+        } else {
+          console.log('No existe')
+        }
+      } catch (error) {
+        console.log('Error priorities:', error)
+      }
+    },
     async createNewUser(context, userInfo) {
       try {
         await setDoc(doc(db, 'users', context.state.user.userId), userInfo)
@@ -113,9 +130,60 @@ export default createStore({
         console.error('Error adding document: ', e)
       }
     },
-    async getAppUsers() {
-      const querySnapshot = await getDocs(collection(db, 'users'))
-      querySnapshot.forEach((doc) => {})
+    async fetchOneUserInformation(context, id) {
+      let oneUser
+      const docRef = doc(db, 'users', id)
+      try {
+        const docSnap = await getDoc(docRef)
+        // oneUser = docSnap.data()
+        if (docSnap.exists()) {
+          oneUser = docSnap.data()
+        } else {
+          // doc.data() will be undefined in this case
+          console.log('No such user!')
+        }
+      } catch (error) {
+        console.log('One User Error: ', error)
+      }
+      oneUser.uid = id
+      return oneUser
+      // console.log('oneUser', oneUser)
+      // return oneUser
+    },
+    async fetchUsersInformation(context) {
+      const allUsersAccount = context.state.account.users
+      const usersInformation = []
+      for (const user in allUsersAccount) {
+        const oneUserInf = await context.dispatch(
+          'fetchOneUserInformation',
+          allUsersAccount[user].uid
+        )
+        oneUserInf['role'] = allUsersAccount[user].role
+        usersInformation.push(oneUserInf)
+      }
+
+      context.commit('setAllUsersInformation', usersInformation)
+    },
+    async fetchAccountById(context) {
+      const docRef = doc(db, 'accounts', context.state.user.accountId)
+      const docSnap = await getDoc(docRef)
+
+      if (docSnap.exists()) {
+        context.commit('setAccount', docSnap.data())
+        console.log('Account', docSnap.data())
+        console.log('Account', context.state.accountId)
+      } else {
+        // doc.data() will be undefined in this case
+        console.log('No such account!')
+      }
+    },
+    async fetchAllAccountInformation(context) {
+      // context.commit.setIsWaiting(state, true)
+      await context.dispatch('fetchAccountById')
+      await context.dispatch('fetchUsersInformation')
+      // context.commit.setIsWaiting(state, false)
+      console.log('fetchAll')
+      console.log('Users from store', context.state.allUsersInformations)
     },
     async createSprint(context, data) {
       try {
@@ -193,8 +261,7 @@ export default createStore({
         if (docSnap.exists()) {
           context.commit('setSprintById', docSnap.data())
         } else {
-          // doc.data() will be undefined in this case
-          context.commit('restoreSprintById')
+          context.commit('setSprintById', { objectives: [] })
           console.log('No such document!')
         }
       }
@@ -218,11 +285,7 @@ export default createStore({
           role,
         })
         const newAccountInfo = {
-          admin: {
-            userName: email,
-            uid: userId,
-          },
-          users: [],
+          users: [{ uid: userId, role: role }],
         }
         try {
           const docRef = await addDoc(
@@ -252,17 +315,17 @@ export default createStore({
       }
     },
     // async upDateUserInfo(context, { userInfo }) {
-    async upDateUserInfo(context) {
-      const res = await updateProfile(auth.currentUser, {
-        displayName: 'Karina Coste',
-        // photoURL: 'https://example.com/jane-q-user/profile.jpg',
-      })
-      if (res) {
-        context.commit('setAuthUser', auth.currentUser)
-      } else {
-        throw new Error('could not complete upDateUserInfooo')
-      }
-    },
+    // async upDateUserInfo(context) {
+    //   const res = await updateProfile(auth.currentUser, {
+    //     displayName: 'Karina Coste',
+    //     // photoURL: 'https://example.com/jane-q-user/profile.jpg',
+    //   })
+    //   if (res) {
+    //     context.commit('setAuthUser', auth.currentUser)
+    //   } else {
+    //     throw new Error('could not complete upDateUserInfooo')
+    //   }
+    // },
     async login(context, { email, password }) {
       context.commit('setSprintById', { objectives: [] })
       const res = await signInWithEmailAndPassword(auth, email, password)
@@ -317,8 +380,14 @@ export default createStore({
     },
   },
   getters: {
+    getterIsWaiting(state) {
+      return state.waiting
+    },
     getterSprints(state) {
       return state.sprints
+    },
+    getterUsersInfo(state) {
+      return UsersTransformer.usersInformationById(state.allUsersInformations)
     },
   },
   modules: {},

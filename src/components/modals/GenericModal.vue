@@ -5,6 +5,7 @@
       <component
         :is="modalComponent"
         @onSaveObjective="saveObjective"
+        @onSaveTask="saveTask"
         :modalData="modalData"
       />
     </keep-alive>
@@ -15,10 +16,12 @@
 import { computed, defineAsyncComponent } from '@vue/runtime-core'
 
 import ObjectiveForm from '@/components/forms/ObjectiveForm.vue'
+import TaskForm from '@/components/forms/TaskForm.vue'
 
 export default {
   components: {
     ObjectiveForm,
+    TaskForm,
   },
   props: {
     modalTitle: {
@@ -33,10 +36,6 @@ export default {
       type: String,
       default: '',
     },
-    // modalData: {
-    //   type: String,
-    //   default: '',
-    // },
     modalData: {
       type: Object,
       default: () => {},
@@ -50,7 +49,10 @@ export default {
     function saveObjective(payload) {
       context.emit('onSaveObjective', payload)
     }
-    return { modalComponent, saveObjective }
+    function saveTask(payload) {
+      context.emit('onSaveTask', payload)
+    }
+    return { modalComponent, saveObjective, saveTask }
   },
 }
 </script>

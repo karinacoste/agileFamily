@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
+import UsersView from '../views/UsersView.vue'
 import { auth } from '../firebase/config'
 import store from '@/store'
 import { onAuthStateChanged } from 'firebase/auth'
@@ -28,6 +29,14 @@ const routes = [
     path: '/SignupView',
     name: 'SignupView',
     component: () => import('../views/SignupView.vue'),
+  },
+  {
+    path: '/UsersView',
+    name: 'UsersView',
+    component: UsersView,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ]
 

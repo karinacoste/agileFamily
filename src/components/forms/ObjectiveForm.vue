@@ -45,7 +45,6 @@ export default {
   setup(props, context) {
     const name = ref(props.modalData.name)
     const description = ref(props.modalData.description)
-    const weekNumber = ref(getISOWeek(new Date()))
     let currentDate = new Date()
     let currentYear = currentDate.getFullYear()
     const store = useStore()

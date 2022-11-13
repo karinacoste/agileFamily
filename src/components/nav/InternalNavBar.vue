@@ -13,7 +13,10 @@
           </figure>
           <div class="flex ml-auto mt-1">
             <nav>
-              <router-link to="/">Home</router-link> | <span>{{ user }}</span
+              <router-link to="/">Home</router-link> |
+              <router-link to="/UsersView">Usuarios</router-link> |<span>{{
+                user
+              }}</span
               >|
               <!-- <router-link to="/LoginView">Login karina</router-link> |
               <router-link to="/SignupView">Signup karina</router-link> | -->
