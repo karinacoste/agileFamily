@@ -79,7 +79,7 @@
       class="w-full h-full"
       group="my-group"
     >
-      <template #item="{ element: item }"
+      <template #item="{ element: item, index }"
         ><div
           class="w-full flex justify-between p-2 border-b-4 pt-6 border-gray-200"
         >
@@ -94,6 +94,7 @@
                     id: item.id,
                     name: item.name,
                     description: item.description,
+                    index: index,
                   })
                 "
               >
@@ -132,28 +133,49 @@
                 class="w-full h-full"
                 group="my-group2"
               >
-                <template #item="{ element: item }"
+                <template #item="{ element: nestedItem }"
                   ><div
                     class="list-group-item bg-white shadow-md mb-6 px-6 py-4 hover:cursor-move"
                   >
                     <div class="flex items-center pb-3">
                       <span>
-                        <img :src="userImage(item.assigned)" alt="user image"
+                        <img
+                          :src="userImage(nestedItem.assigned)"
+                          alt="user image"
                       /></span>
                       <div class="ml-3 font-semibold">
                         <!-- <span class="font-normal"> Asignada a:</span> -->
-                        {{ userAssignedName(item.assigned) }}
+                        {{ userAssignedName(nestedItem.assigned) }}
                       </div>
                     </div>
                     <div class="font-semibold text-lg pl-1 pb-4">
-                      {{ item.name }}
+                      <span
+                        class="cursor-pointer"
+                        @click="
+                          showGenericModal('Editar tarea', 'taskForm', {
+                            objectiveId: item.id,
+                            state: state,
+                            allUsers: allUsersInfObject,
+                            userAssigned: nestedItem.assigned,
+                            taskId: nestedItem.id,
+                            name: nestedItem.name,
+                            estimateTime: nestedItem.estimateTime,
+                            priority: nestedItem.priority,
+                            description: nestedItem.description,
+                          })
+                        "
+                      >
+                        {{ nestedItem.name }}</span
+                      >
                     </div>
                     <div class="flex items-center pb-11 pr-4">
                       <span class="ml-2">Prioridad: </span>
-                      <span class="ml-2 font-bold"> {{ item.priority }}</span>
+                      <span class="ml-2 font-bold">
+                        {{ nestedItem.priority }}</span
+                      >
                       <span class="ml-4">Tiempo: </span>
                       <span class="ml-2 font-bold"
-                        >{{ item.estimateTime }}h</span
+                        >{{ nestedItem.estimateTime }}h</span
                       >
                     </div>
                   </div>
@@ -189,7 +211,6 @@ import InternalNavBar from '@/components/nav/InternalNavBar.vue'
 import OptionsIcon from '@/components/icons/OptionsIcon.vue'
 // import DynamicIcons from '@/components/icons/DynamicIcons.vue'
 import draggable from 'vuedraggable'
-import { getWeekStart } from '@/assets/js/utils.js'
 import {
   addDays,
   getTime,
@@ -280,14 +301,13 @@ export default defineComponent({
       const getObjectiveIndex = sprintById.value.objectives.findIndex(
         (oneObjective) => oneObjective.id === task.objectiveId
       )
-
       // Si el objetivo existe se busca dentro del estado al que pertenece la tarea si ya existe una con el mismo id
       const getTaskIndex = sprintById.value.objectives[getObjectiveIndex][
         task.state
       ].findIndex((oneTask) => oneTask.id === task.taskProperties.id)
 
       if (getTaskIndex >= 0) {
-        sprintById.value.objectives[getObjectiveIndex].task.state[
+        sprintById.value.objectives[getObjectiveIndex][task.state][
           getTaskIndex
         ] = task.taskProperties
       } else {
