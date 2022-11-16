@@ -3,15 +3,7 @@ import { auth } from '../firebase/config'
 import { db } from '../firebase/config'
 import router from '../router'
 import UsersTransformer from '@/transformers/UsersTransformer'
-import {
-  addDays,
-  getTime,
-  endOfWeek,
-  startOfISOWeek,
-  endOfISOWeek,
-  getWeek,
-  formatISO,
-} from 'date-fns'
+
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -221,7 +213,6 @@ export default createStore({
     async getSprints(context) {
       const accountId = await context.state.user.accountId
       // const accountId = 'Ilfq5q1BKhUTou0F5ec4'
-
       if (accountId) {
         const q = query(
           collection(db, 'accounts', accountId.replace(/ /g, ''), 'sprints')
@@ -269,8 +260,12 @@ export default createStore({
 
     async signup(context, userInfo) {
       // async code
-      const { displayName, email, password, name, surname, role } = userInfo
+      const { displayName, email, password, name, surname, role, img } =
+        userInfo
+      // Se crea un nuevo usurio en auth de firebase
       const res = await createUserWithEmailAndPassword(auth, email, password)
+      // Si no ha habido error se mutan (actualizan) los estados de authUser y currentUser para
+      // tener a mano la información del nuevo usurio
       if (res) {
         const userId = auth.currentUser.uid
         context.commit('setAuthUser', auth.currentUser)
@@ -283,7 +278,9 @@ export default createStore({
           email,
           password,
           role,
+          img,
         })
+        // Después de que se haya creado al usurio en auth de firebase, se crea la cuenta
         const newAccountInfo = {
           users: [{ uid: userId, role: role }],
         }
@@ -293,17 +290,19 @@ export default createStore({
             newAccountInfo
           )
           if (docRef.id) {
-            // si se ha creado una nueva cuenta, se actualiza el estado accountId
+            // si se ha creado una nueva cuenta, se setea el accountId
             context.commit('setAccountId', docRef.id)
+            // Se crea un nuevo usurio en la colección users para tener más datos
             try {
               await context.dispatch('createNewUser', {
                 displayName,
                 email,
                 name,
                 surname,
-                role,
                 accountId: docRef.id,
+                img,
               })
+              await context.dispatch('fetchAuthUser')
             } catch (error) {
               console.log('ERROR', error)
             }
@@ -314,18 +313,7 @@ export default createStore({
         throw new Error('could not complete sigup')
       }
     },
-    // async upDateUserInfo(context, { userInfo }) {
-    // async upDateUserInfo(context) {
-    //   const res = await updateProfile(auth.currentUser, {
-    //     displayName: 'Karina Coste',
-    //     // photoURL: 'https://example.com/jane-q-user/profile.jpg',
-    //   })
-    //   if (res) {
-    //     context.commit('setAuthUser', auth.currentUser)
-    //   } else {
-    //     throw new Error('could not complete upDateUserInfooo')
-    //   }
-    // },
+
     async login(context, { email, password }) {
       context.commit('setSprintById', { objectives: [] })
       const res = await signInWithEmailAndPassword(auth, email, password)
@@ -344,6 +332,7 @@ export default createStore({
       context.commit('setAuthUser', null)
       context.commit('setUser', null)
       context.commit('setSprintById', { objectives: [] })
+      context.commit('setAllUsersInformation', null)
       // window.localStorage.clear()
       router.push('/ExternalHomeView')
     },

@@ -105,6 +105,7 @@ export default {
           email: email.value,
           password: password.value,
           role: 'admin',
+          img: 'generic-photo',
         })
         router.push('/')
       } catch (err) {

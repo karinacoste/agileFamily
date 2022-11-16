@@ -12,8 +12,6 @@
         ></generic-modal>
       </div>
     </Modal>
-
-    <!-- <p class="font-bold">showedUser {{ showedUser.email }}</p> -->
     <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
     <h1 class="text-2xl font-bold ml-7 my-5">SPRINT 1 {{ userDisplayName }}</h1>
     <!-- <h1 class="text-5xl">{{ showedUser.email }}</h1> -->
@@ -328,9 +326,6 @@ export default defineComponent({
     function closeModal() {
       isShow.value = false
     }
-
-    // const dateTests = getDateOfWeek(weekNumber, currentYear.value)
-    // const dateTests = weekNumber
     const daysPerWeeks = new Date(2022, 0, 295)
     const getDate = daysPerWeeks.getDate()
     const end = startOfISOWeek(currentDate)
