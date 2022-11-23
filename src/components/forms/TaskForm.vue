@@ -176,7 +176,7 @@ export default {
       context.emit('onSaveTask', newTask)
     }
     const userImage = computed(() => {
-      let image = require('@/assets/images/users/generic-photo.png')
+      let image = require('@/assets/images/users/user0.png')
       if (userAssigned.value !== '') {
         let userObject = allUsers.value[userAssigned.value]
         image = require('@/assets/images/users/' + userObject.img + '.png')

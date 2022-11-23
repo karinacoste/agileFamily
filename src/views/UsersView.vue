@@ -6,14 +6,45 @@
           :modalTitle="modalTitle"
           :componentName="modalComponent"
           :modalData="modalData"
-          @onSaveObjective="saveObjective"
+          @onSaveUser="saveUser"
           @onCancelModal="closeModal"
         ></generic-modal>
       </div>
     </Modal>
     <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
-    <div class="flex md:w-8/12">
-      <h1 class="text-3xl font-bold ml-7 my-5">Usuarios</h1>
+    <div class="flex md:w-7/12 border-b border-gray-300">
+      <h1 class="text-2xl font-semibold ml-7 mt-5 mb-2">Usuarios</h1>
+    </div>
+
+    <!-- <span
+      class="border border-primary w-24 h-9 rounded-md text-center pt-1 hover:text-primary"
+      ><router-link to="/LoginView">Login</router-link></span
+    > -->
+
+    <div class="w-7/12 flex justify-center flex-col">
+      <CustomButton
+        text="Añadir usuario"
+        icon="PlusIcon"
+        buttonClass="h-full flex ml-auto mt-4 px-6 py-2 flex items-center justify-center rounded-md bg-primary hover:bg-primaryDark text-white focus:outline-none"
+        @onEvent="showGenericModal('Nuevo usuario', 'UserForm', {})"
+      />
+      <!-- // ///////////////////////// -->
+      <div class="flex flex-col items-center">
+        <div
+          v-for="user in allUsersInformations"
+          :key="user"
+          class="w-3/6 flex shadow-md mt-12 p-4"
+        >
+          <div class="mr-4">
+            <img :src="userImage(user)" alt="user image" />
+          </div>
+          <div class="mt-2">
+            <span class="font-semibold text-xl">{{ user.name }}</span>
+            <span class="block">{{ user.email }}</span>
+          </div>
+        </div>
+      </div>
+      <!-- // ///////////////////////// -->
     </div>
   </div>
 </template>
@@ -21,6 +52,7 @@
 <script>
 // @ is an alias to /src
 import GenericModal from '@/components/modals/GenericModal.vue'
+import CustomButton from '@/components/buttons/CustomButton.vue'
 import {
   data,
   ref,
@@ -56,6 +88,7 @@ export default defineComponent({
   components: {
     InternalNavBar,
     GenericModal,
+    CustomButton,
   },
 
   setup() {
@@ -73,24 +106,22 @@ export default defineComponent({
         console.log('usersInf Error', error)
       }
     }
-
-    let allUsersInformations = ref(store.state.allUsersInformations)
-    // const showGenericModal = (
-    //   modalTitle,
-    //   componentName,
-    //   componentPath,
-    //   modalData
-    // ) => {
-    //   return { modalTitle, componentName, componentPath, modalData }
-    // }
-
-    async function showGenericModal(title, component, data) {
+    function saveUser(userInfo) {
+      console.log('payload', userInfo)
       try {
-        await store.dispatch('getPriorities')
+        store.dispatch('createNewUser', userInfo)
+        closeModal()
       } catch (error) {
-        console.log('Error priorities:', error)
+        console.log('Error saveUser', error)
       }
-      console.log('component')
+    }
+    let allUsersInformations = computed(() => store.state.allUsersInformations)
+    function userImage(userInfo) {
+      return userInfo !== ''
+        ? require('@/assets/images/users/' + userInfo.img + '.png')
+        : require('@/assets/images/users/user0.png')
+    }
+    async function showGenericModal(title, component, data) {
       modalTitle.value = title
       modalComponent.value = component
       modalData.value = data
@@ -104,17 +135,7 @@ export default defineComponent({
     function closeModal() {
       isShow.value = false
     }
-
-    store.dispatch('getSprints')
-    const sprints = computed(() => store.state.sprints)
-    const objectives = computed(() => store.state.sprints[0].objectives)
-
-    // const objectives = ref(store.state.sprints[0].objectives)
-
-    const states = ['todo', 'progress', 'blocked', 'completed']
     const userDisplayName = ref(store.state.user.displayName)
-    // const sprints = ref(store.getters['getterSprints'])
-    // const sprints = ref(store.state.sprints)
     const userAccountId = ref(store.state.user.accountId)
     const authUser = ref(store.state.authUser)
     const userIdToken = ref(store.state.userIdToken)
@@ -127,6 +148,8 @@ export default defineComponent({
     }
 
     return {
+      saveUser,
+      userImage,
       allUsersInformations,
       modalTitle,
       modalComponent,
@@ -136,11 +159,6 @@ export default defineComponent({
       showModal,
       closeModal,
       account,
-      watchEffect,
-      objectives,
-      states,
-      sprints,
-      // sprints: computed(() => store.state.sprints),
       userAccountId,
       showUsers,
       userDisplayName,

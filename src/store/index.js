@@ -3,7 +3,6 @@ import { auth } from '../firebase/config'
 import { db } from '../firebase/config'
 import router from '../router'
 import UsersTransformer from '@/transformers/UsersTransformer'
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -13,6 +12,7 @@ import {
   sendEmailVerification,
 } from 'firebase/auth'
 import {
+  arrayUnion,
   collection,
   onSnapshot,
   query,
@@ -102,13 +102,6 @@ export default createStore({
         }
       } catch (error) {
         console.log('Error priorities:', error)
-      }
-    },
-    async createNewUser(context, userInfo) {
-      try {
-        await setDoc(doc(db, 'users', context.state.user.userId), userInfo)
-      } catch (e) {
-        console.error('Error adding document: ', e)
       }
     },
 
@@ -258,6 +251,73 @@ export default createStore({
       }
     },
 
+    // async addNewUserToAccount(context, userInfo) {
+    //   const { displayName, email, password, name, surname, role, img } =
+    //     userInfo
+    //   try {
+    //     adminAuth.createUser({
+    //       email: email,
+    //       password: password,
+    //     })
+    //   } catch (error) {
+    //     console.log('Error AAAuth', error)
+    //   }
+    //const res = await createUserWithEmailAndPassword(auth, email, password)
+
+    // if (res) {
+    //   try {
+    //     await context.dispatch('createNewUser', {
+    //       accountId: this.state.accountId,
+    //       displayName,
+    //       name,
+    //       surname,
+    //       email,
+    //       role,
+    //       img,
+    //     })
+    //     await this.dispatch('fetchAccountById', context.state.userId)
+    //     await this.dispatch('fetchUsersInformation')
+    //   } catch (error) {
+    //     console.log('ERROR createNewUser', error)
+    //   }
+    // }
+    //  },
+    async updateAccoutUsers(contex, infoUser) {
+      const { accountId, uid, role } = infoUser
+      const AccountDocRef = doc(db, 'accounts', accountId)
+      try {
+        await updateDoc(AccountDocRef, {
+          users: arrayUnion({ uid, role }),
+        })
+      } catch (error) {
+        console.log('accountId', accountId)
+        console.error('Error adding user to account: ', error)
+      }
+    },
+    async createNewAdmin(context, userInfo) {
+      try {
+        await setDoc(doc(db, 'users', context.state.user.userId), userInfo)
+        await context.dispatch('updateAccoutUsers', userInfo)
+      } catch (e) {
+        console.error('Error adding user: ', e)
+      }
+    },
+    async createNewUser(context, userInfo) {
+      const usersRef = doc(db, 'users', userInfo.uid)
+      const userSnap = await getDoc(usersRef)
+      console.log('userSnap', userSnap)
+      if (!userSnap.exists()) {
+        try {
+          await setDoc(doc(db, 'users', userInfo.email), userInfo)
+          await context.dispatch('updateAccoutUsers', userInfo)
+          await context.dispatch('fetchAllAccountInformation')
+        } catch (e) {
+          console.error('Error adding new user: ', e)
+        }
+      } else {
+        throw 'Este usurio ya existe'
+      }
+    },
     async signup(context, userInfo) {
       // async code
       const { displayName, email, password, name, surname, role, img } =
@@ -294,17 +354,17 @@ export default createStore({
             context.commit('setAccountId', docRef.id)
             // Se crea un nuevo usurio en la colección users para tener más datos
             try {
-              await context.dispatch('createNewUser', {
+              await context.dispatch('createNewAdmin', {
+                accountId: docRef.id,
                 displayName,
-                email,
                 name,
                 surname,
-                accountId: docRef.id,
+                email,
                 img,
               })
               await context.dispatch('fetchAuthUser')
             } catch (error) {
-              console.log('ERROR', error)
+              console.log('ERROR createNewAdmin', error)
             }
           }
           // await context.dispatch('createNewAccount', newAccountInfo)

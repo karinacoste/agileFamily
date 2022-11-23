@@ -1,6 +1,6 @@
 <template>
   <div class="h-full">
-    <div id="modals"></div>
+    <div id="modals" class="z-50"></div>
     <!-- <NavBar></NavBar> -->
     <router-view />
   </div>

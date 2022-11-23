@@ -246,9 +246,9 @@ export default defineComponent({
           'getSprintById',
           `${currentYear}-${weekNumber.value}`
         )
-        console.log('allAccooun')
+        console.log('allAccoount')
       } catch (error) {
-        console.log(error)
+        console.log('Error allAccoount', error)
       }
     }
     function userImage(userId) {
@@ -256,7 +256,7 @@ export default defineComponent({
         ? require('@/assets/images/users/' +
             allUsersInfObject.value[userId].img +
             '.png')
-        : require('@/assets/images/users/generic-photo.png')
+        : require('@/assets/images/users/user0.png')
     }
     function userAssignedName(userId) {
       return userId !== ''

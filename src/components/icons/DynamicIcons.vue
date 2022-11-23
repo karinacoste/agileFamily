@@ -3,11 +3,9 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
+
 export default {
-  components: {
-    svgIcon,
-  },
   props: {
     icon: {
       type: String,
@@ -15,21 +13,25 @@ export default {
     },
   },
   setup(props, context) {
-    const svgIcon = ref(() => import(`@/components/icons/OptionsIcon.vue`))
-    // const svgIcon = computed(() => {
-    //   console.log('svgIcon', svgIcon)
-    //   if (props.icon === '') {
-    //     return
-    //   }
-    //   let component
-    //   try {
-    //     component = () => import(`@/components/icons/OptionsIcon.vue`)
-    //   } catch (error) {
-    //     console.log('Icon Error: ', error)
-    //     component = ''
-    //   }
-    //   return component
-    // })
+    const svgIcon = computed(() => {
+      console.log('svgIcon', svgIcon)
+      if (props.icon === '') {
+        return
+      }
+      let component
+      try {
+        console.log('props.icon', props.icon)
+        component = defineAsyncComponent(() =>
+          import(`@/components/icons/${props.icon}.vue`)
+        )
+        // component = () => import(`@/components/icons/${props.icon}.vue`)
+      } catch (error) {
+        console.log('Icon Error: ', error)
+        component = ''
+      }
+      console.log('component', component)
+      return component
+    })
     return { svgIcon }
   },
 }
