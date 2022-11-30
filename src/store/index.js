@@ -1,5 +1,6 @@
 import { createStore, storeKey } from 'vuex'
 import { auth } from '../firebase/config'
+import { sendSignInLinkToEmail } from 'firebase/auth'
 import { db } from '../firebase/config'
 import router from '../router'
 import UsersTransformer from '@/transformers/UsersTransformer'
@@ -9,7 +10,6 @@ import {
   updateProfile,
   onAuthStateChanged,
   signOut,
-  sendEmailVerification,
 } from 'firebase/auth'
 import {
   arrayUnion,
@@ -109,8 +109,11 @@ export default createStore({
       try {
         // const docRef = await setDoc(collection(db, 'users'), {
         // await setDoc(doc(db, 'accounts', newAccount))
-        const docRef = await addDoc(collection(db, 'accounts'), accountInfo)
-        context.commit('setaccountId', docRef.id)
+        const newAccountDocRef = await addDoc(
+          collection(db, 'accounts'),
+          accountInfo
+        )
+        context.commit('setaccountId', newAccountDocRef.id)
       } catch (e) {
         console.error('Error adding document: ', e)
       }
@@ -137,6 +140,7 @@ export default createStore({
     },
     async fetchUsersInformation(context) {
       const allUsersAccount = context.state.account.users
+      console.log('allUsersAccount', allUsersAccount)
       const usersInformation = []
       for (const user in allUsersAccount) {
         const oneUserInf = await context.dispatch(
@@ -150,7 +154,8 @@ export default createStore({
       context.commit('setAllUsersInformation', usersInformation)
     },
     async fetchAccountById(context) {
-      const docRef = doc(db, 'accounts', context.state.user.accountId)
+      const accountId = context.state.accountId || context.state.user.accountId
+      const docRef = doc(db, 'accounts', accountId)
       const docSnap = await getDoc(docRef)
 
       if (docSnap.exists()) {
@@ -251,37 +256,6 @@ export default createStore({
       }
     },
 
-    // async addNewUserToAccount(context, userInfo) {
-    //   const { displayName, email, password, name, surname, role, img } =
-    //     userInfo
-    //   try {
-    //     adminAuth.createUser({
-    //       email: email,
-    //       password: password,
-    //     })
-    //   } catch (error) {
-    //     console.log('Error AAAuth', error)
-    //   }
-    //const res = await createUserWithEmailAndPassword(auth, email, password)
-
-    // if (res) {
-    //   try {
-    //     await context.dispatch('createNewUser', {
-    //       accountId: this.state.accountId,
-    //       displayName,
-    //       name,
-    //       surname,
-    //       email,
-    //       role,
-    //       img,
-    //     })
-    //     await this.dispatch('fetchAccountById', context.state.userId)
-    //     await this.dispatch('fetchUsersInformation')
-    //   } catch (error) {
-    //     console.log('ERROR createNewUser', error)
-    //   }
-    // }
-    //  },
     async updateAccoutUsers(contex, infoUser) {
       const { accountId, uid, role } = infoUser
       const AccountDocRef = doc(db, 'accounts', accountId)
@@ -289,6 +263,7 @@ export default createStore({
         await updateDoc(AccountDocRef, {
           users: arrayUnion({ uid, role }),
         })
+        console.log('llega')
       } catch (error) {
         console.log('accountId', accountId)
         console.error('Error adding user to account: ', error)
@@ -297,9 +272,27 @@ export default createStore({
     async createNewAdmin(context, userInfo) {
       try {
         await setDoc(doc(db, 'users', context.state.user.userId), userInfo)
-        await context.dispatch('updateAccoutUsers', userInfo)
+        // await context.dispatch('updateAccoutUsers', userInfo)
       } catch (e) {
         console.error('Error adding user: ', e)
+      }
+    },
+
+    async sendAnEmail(context, email) {
+      console.log('email', email)
+      const actionCodeSettings = {
+        url:
+          // 'https://karinacoste.github.io/kc-project/#/SignupView?accountId=' +
+          `http://localhost:8080/#/SignupView?accountId=${context.state.user.accountId}`,
+
+        // This must be true.
+        handleCodeInApp: true,
+      }
+      try {
+        sendSignInLinkToEmail(auth, email, actionCodeSettings)
+        console.log('sendEmail', email)
+      } catch (error) {
+        console.log('sendEmail', error)
       }
     },
     async createNewUser(context, userInfo) {
@@ -320,8 +313,16 @@ export default createStore({
     },
     async signup(context, userInfo) {
       // async code
-      const { displayName, email, password, name, surname, role, img } =
-        userInfo
+      const {
+        displayName,
+        email,
+        password,
+        name,
+        surname,
+        role,
+        img,
+        userAccountId,
+      } = userInfo
       // Se crea un nuevo usurio en auth de firebase
       const res = await createUserWithEmailAndPassword(auth, email, password)
       // Si no ha habido error se mutan (actualizan) los estados de authUser y currentUser para
@@ -340,35 +341,43 @@ export default createStore({
           role,
           img,
         })
-        // Después de que se haya creado al usurio en auth de firebase, se crea la cuenta
-        const newAccountInfo = {
-          users: [{ uid: userId, role: role }],
-        }
-        try {
-          const docRef = await addDoc(
-            collection(db, 'accounts'),
-            newAccountInfo
-          )
-          if (docRef.id) {
-            // si se ha creado una nueva cuenta, se setea el accountId
-            context.commit('setAccountId', docRef.id)
-            // Se crea un nuevo usurio en la colección users para tener más datos
-            try {
-              await context.dispatch('createNewAdmin', {
-                accountId: docRef.id,
-                displayName,
-                name,
-                surname,
-                email,
-                img,
-              })
-              await context.dispatch('fetchAuthUser')
-            } catch (error) {
-              console.log('ERROR createNewAdmin', error)
-            }
+        if (userAccountId !== '') {
+          const uid = userId
+          const accountId = userAccountId
+          console.log('user', { accountId, uid, role })
+          context.dispatch('updateAccoutUsers', { accountId, uid, role })
+          context.commit('setAccountId', userAccountId)
+        } else {
+          const newAccountInfo = {
+            users: [{ uid: userId, role: role }],
           }
-          // await context.dispatch('createNewAccount', newAccountInfo)
-        } catch (error) {}
+          try {
+            // se crea una nueva cuenta con usurio administrador
+            const docRef = await addDoc(
+              collection(db, 'accounts'),
+              newAccountInfo
+            )
+            if (docRef.id) {
+              // si se ha creado una nueva cuenta, se setea el accountId
+              context.commit('setAccountId', docRef.id)
+              // Se crea un nuevo usurio en la colección users para tener más datos
+            }
+            // await context.dispatch('createNewAccount', newAccountInfo)
+          } catch (error) {
+            console.log('Error creando cuenta', error)
+          }
+        }
+
+        // Se crea un documento en la collección users con todos los datos del nuevo usurio
+        await context.dispatch('createNewAdmin', {
+          accountId: context.state.accountId,
+          displayName,
+          name,
+          surname,
+          email,
+          img,
+        })
+        await context.dispatch('fetchAuthUser')
       } else {
         throw new Error('could not complete sigup')
       }

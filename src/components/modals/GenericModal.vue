@@ -19,12 +19,14 @@ import { computed, defineAsyncComponent } from '@vue/runtime-core'
 import ObjectiveForm from '@/components/forms/ObjectiveForm.vue'
 import TaskForm from '@/components/forms/TaskForm.vue'
 import UserForm from '@/components/forms/UserForm.vue'
+import NewUserForm from '@/components/forms/NewUserForm.vue'
 
 export default {
   components: {
     ObjectiveForm,
     TaskForm,
     UserForm,
+    NewUserForm,
   },
   props: {
     modalTitle: {

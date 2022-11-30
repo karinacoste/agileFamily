@@ -9,6 +9,8 @@
         alt="agileFamily Logo"
       />
     </div>
+    <!-- <p>accountId: {{ accountIdFromFirebase }}</p> -->
+
     <div
       class="w-full md:w-2/5 flex justify-center md:justify-start items-center mt-10 mt-14 md:mt-0"
     >
@@ -74,7 +76,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import InputField from '@/components/forms/commons/InputField.vue'
@@ -87,6 +89,13 @@ export default {
     return {}
   },
   setup() {
+    const accountIdFromFirebase = computed(() => {
+      const continueUrl = new URL(window.location.href).searchParams.get(
+        'continueUrl'
+      )
+      return continueUrl ? continueUrl.split('accountId=')[1] : ''
+    })
+
     const email = ref('')
     const password = ref('')
     const displayName = ref('')
@@ -97,6 +106,8 @@ export default {
     const store = useStore()
     const router = useRouter()
     const handleSubmit = async () => {
+      const role = accountIdFromFirebase.value ? 'user' : 'admin'
+      const userAccountId = accountIdFromFirebase.value || ''
       try {
         await store.dispatch('signup', {
           displayName: displayName.value,
@@ -104,7 +115,8 @@ export default {
           surname: surname.value,
           email: email.value,
           password: password.value,
-          role: 'admin',
+          userAccountId,
+          role,
           img: 'user0',
         })
         router.push('/')
@@ -112,7 +124,16 @@ export default {
         error.value = err.message
       }
     }
-    return { handleSubmit, email, password, displayName, name, surname, error }
+    return {
+      accountIdFromFirebase,
+      handleSubmit,
+      email,
+      password,
+      displayName,
+      name,
+      surname,
+      error,
+    }
   },
 }
 </script>

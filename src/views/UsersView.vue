@@ -26,7 +26,7 @@
         text="Añadir usuario"
         icon="PlusIcon"
         buttonClass="h-full flex ml-auto mt-4 px-6 py-2 flex items-center justify-center rounded-md bg-primary hover:bg-primaryDark text-white focus:outline-none"
-        @onEvent="showGenericModal('Nuevo usuario', 'UserForm', {})"
+        @onEvent="showGenericModal('Nuevo usuario', 'NewUserForm', {})"
       />
       <!-- // ///////////////////////// -->
       <div class="flex flex-col items-center">
@@ -65,20 +65,6 @@ import {
 } from 'vue'
 import { useStore } from 'vuex'
 import InternalNavBar from '@/components/nav/InternalNavBar.vue'
-import OptionsIcon from '@/components/icons/OptionsIcon.vue'
-// import DynamicIcons from '@/components/icons/DynamicIcons.vue'
-import draggable from 'vuedraggable'
-import { getWeekStart } from '@/assets/js/utils.js'
-import {
-  addDays,
-  getTime,
-  endOfWeek,
-  startOfISOWeek,
-  endOfISOWeek,
-  getWeek,
-  getISOWeek,
-  formatISO,
-} from 'date-fns'
 const store = useStore()
 // import NavBar from '../components/nav/NavBar.vue'
 
@@ -93,7 +79,7 @@ export default defineComponent({
 
   setup() {
     const store = useStore()
-
+    // store.dispatch('sendAnEmail')
     const account = computed(() => store.state.account)
     let modalTitle = ref('')
     let modalComponent = ref('')
@@ -106,10 +92,10 @@ export default defineComponent({
         console.log('usersInf Error', error)
       }
     }
-    function saveUser(userInfo) {
-      console.log('payload', userInfo)
+    function saveUser(userEmail) {
+      console.log('payload', userEmail)
       try {
-        store.dispatch('createNewUser', userInfo)
+        store.dispatch('sendAnEmail', userEmail)
         closeModal()
       } catch (error) {
         console.log('Error saveUser', error)

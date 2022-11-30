@@ -175,6 +175,7 @@ export default {
       console.log('newTask', newTask)
       context.emit('onSaveTask', newTask)
     }
+
     const userImage = computed(() => {
       let image = require('@/assets/images/users/user0.png')
       if (userAssigned.value !== '') {
