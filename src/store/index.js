@@ -4,6 +4,7 @@ import { sendSignInLinkToEmail } from 'firebase/auth'
 import { db } from '../firebase/config'
 import router from '../router'
 import UsersTransformer from '@/transformers/UsersTransformer'
+import SprintsTransformer from '@/transformers/SprintsTransformer'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -440,6 +441,12 @@ export default createStore({
     },
     getterSprints(state) {
       return state.sprints
+    },
+    getterSprintsTable(state) {
+      return SprintsTransformer.sprintsStatsTable(state.sprints)
+    },
+    getterSprintsAverage(state) {
+      return SprintsTransformer.sprintsStatsAverages(state.sprints)
     },
     getterUsersInfo(state) {
       return UsersTransformer.usersInformationById(state.allUsersInformations)

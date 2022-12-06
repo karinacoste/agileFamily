@@ -38,6 +38,14 @@ const routes = [
       requiresAuth: true,
     },
   },
+  {
+    path: '/SprintsStatsView',
+    name: 'SprintsStatsView',
+    component: () => import('../views/SprintsStatsView.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+  },
 ]
 
 const router = createRouter({

@@ -170,7 +170,7 @@
                   ><div
                     class="list-group-item bg-white shadow-md mb-6 px-6 py-4 hover:cursor-move"
                   >
-                    <div class="flex items-center pb-3">
+                    <div class="flex items-center pb-2">
                       <span>
                         <img
                           :src="userImage(nestedItem.assigned)"
@@ -181,7 +181,7 @@
                         {{ userAssignedName(nestedItem.assigned) }}
                       </div>
                     </div>
-                    <div class="font-semibold text-lg pl-1 pb-4">
+                    <div class="font-semibold text-lg pl-1 pb-2">
                       <span
                         class="cursor-pointer"
                         @click="
@@ -201,8 +201,10 @@
                         {{ nestedItem.name }}</span
                       >
                     </div>
-                    <div class="flex items-center pb-11 pr-4">
-                      <span class="ml-2">Prioridad: </span>
+                    <div
+                      class="flex items-center border-t border-gray-300 mt-1 pt-0.5 pr-4"
+                    >
+                      <span class="ml-1">Prioridad: </span>
                       <span class="ml-2 font-bold">
                         {{ nestedItem.priority }}</span
                       >

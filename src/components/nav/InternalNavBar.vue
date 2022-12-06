@@ -14,6 +14,7 @@
           <div class="flex ml-auto mt-1">
             <nav>
               <router-link to="/">Home</router-link> |
+              <router-link to="/SprintsStatsView">Estadísticas</router-link> |
               <router-link to="/UsersView">Usuarios</router-link> |<span>{{
                 user
               }}</span
