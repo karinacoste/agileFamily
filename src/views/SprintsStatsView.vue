@@ -2,12 +2,49 @@
   <div class="w-full flex flex-col items-center min-h-max h-full">
     <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
     <div class="flex md:w-7/12 border-b border-gray-300">
-      <h1 class="text-2xl font-semibold ml-7 mt-5 mb-2">Estadísticas</h1>
+      <h1 class="text-2xl font-semibold mt-5 mb-2">Estadísticas</h1>
     </div>
-    <p>achievedObjectives{{ sprintsAverage.achievedObjectivesAverage }}</p>
-    <p>finishedTasks{{ sprintsAverage.finishedTasksAverage }}</p>
-    <p>totalHours{{ sprintsAverage.totalHoursAverage }}</p>
-    <div class="flex flex-col md:w-7/12 mt-4">
+
+    <div class="flex md:w-7/12 w-full mt-6 items-end">
+      <div class="w-2/6 flex flex-col items-baseline h-full">
+        <div class="mt-4">
+          <div class="text-5xl">
+            {{ sprintsAverage.achievedObjectivesAverage }}
+          </div>
+          <p class="text-lg font-semibold leading-5 mt-2">
+            Objetivos alcanzados
+          </p>
+        </div>
+        <div class="mt-4">
+          <div class="text-5xl">
+            {{ sprintsAverage.finishedTasksAverage }}
+          </div>
+          <p class="text-lg font-semibold leading-5 mt-2">Tareas finalizadas</p>
+        </div>
+        <div class="mt-4 flex flex-col justify-self-end items-baseline">
+          <div class="text-5xl">
+            {{ sprintsAverage.totalHoursAverage }}
+          </div>
+          <p class="text-lg font-semibold leading-5 mt-2 mb-6">
+            Horas dedicadas
+          </p>
+        </div>
+        <p class="text-lg bg-gray-200 px-2 py-1 w-11/12">MEDIA SEMANAL</p>
+      </div>
+      <div class="w-2/6 flex flex-col">
+        <div><Doughnut :data="testData" :options="options" /></div>
+        <div class="text-center m-auto text-lg bg-gray-200 px-2 py-1 w-11/12">
+          TOTAL DE TAREAS
+        </div>
+      </div>
+
+      <div class="w-2/6">
+        <p class="text-lg bg-gray-200 px-2 py-1 w-11/12 ml-auto text-right">
+          OBJETIVOS Y TAREAS
+        </p>
+      </div>
+    </div>
+    <div class="flex flex-col md:w-7/12 mt-16">
       <div
         class="flex w-full items-center font-semibold pb-1 border-b border-gray-500"
       >
@@ -45,6 +82,10 @@
 
 <script>
 import InternalNavBar from '@/components/nav/InternalNavBar.vue'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Doughnut } from 'vue-chartjs'
+ChartJS.register(ArcElement, Tooltip, Legend)
+
 import {
   data,
   ref,
@@ -59,6 +100,7 @@ import { useStore } from 'vuex'
 export default {
   components: {
     InternalNavBar,
+    Doughnut,
   },
   setup() {
     const store = useStore()
@@ -67,10 +109,63 @@ export default {
     // store.getters['getterSprints']
     const sprints = computed(() => store.getters['getterSprintsTable'])
     const sprintsAverage = computed(() => store.getters['getterSprintsAverage'])
+    // const doughnutRef = ref()
+    // const testData = computed(() => ({
+    //   labels: ['Por hacer', 'En curso', 'Bloquedas', 'Hechas'],
+    //   datasets: [
+    //     {
+    //       data: [
+    //         sprintsAverage.value.totalTodoTasks,
+    //         sprintsAverage.value.totalProgressTasks,
+    //         sprintsAverage.value.totalBlockedTasks,
+    //         sprintsAverage.value.totalFinishedTasks,
+    //       ],
+    //       backgroundColor: ['#6B7280', '#3B82F6', '#EF4444', '#22C55E'],
+    //     },
+    //   ],
+    // }))
+    const data = ref([
+      sprintsAverage.value.totalTodoTasks,
+      sprintsAverage.value.totalProgressTasks,
+      sprintsAverage.value.totalBlockedTasks,
+      sprintsAverage.value.totalFinishedTasks,
+    ])
+
+    const options = ref({
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+      },
+    })
+
+    const testData = computed(() => ({
+      labels: ['Por hacer', 'En curso', 'Bloqueada', 'Hechas'],
+      datasets: [
+        {
+          backgroundColor: ['#6B7280', '#3B82F6', '#EF4444', '#22C55E'],
+          data: [
+            sprintsAverage.value.totalTodoTasks,
+            sprintsAverage.value.totalProgressTasks,
+            sprintsAverage.value.totalBlockedTasks,
+            sprintsAverage.value.totalFinishedTasks,
+          ],
+        },
+      ],
+    }))
+
     async function fetchAllSprint() {
       await store.dispatch('getSprints')
     }
-    return { userDisplayName, sprints, sprintsAverage }
+    return {
+      userDisplayName,
+      sprints,
+      sprintsAverage,
+      testData,
+      options,
+    }
   },
 }
 </script>

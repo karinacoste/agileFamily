@@ -4,9 +4,15 @@ export default class SprintsTransformer {
     let totalAchievedObjectives = 0
     let totalFinishedTasks = 0
     let totalHours = 0
+    let totalProgressTasks = 0
+    let totalTodoTasks = 0
+    let totalBlockedTasks = 0
     for (const key in allSprintsStats) {
       totalAchievedObjectives += allSprintsStats[key].achievedObjectives
       totalFinishedTasks += allSprintsStats[key].tasks.completedTasks
+      totalProgressTasks += allSprintsStats[key].tasks.progressTasks
+      totalTodoTasks += allSprintsStats[key].tasks.todoTasks
+      totalBlockedTasks += allSprintsStats[key].tasks.blockedTasks
       totalHours += allSprintsStats[key].hours
     }
     return {
@@ -14,6 +20,10 @@ export default class SprintsTransformer {
         totalAchievedObjectives / allSprintsStats.length,
       finishedTasksAverage: totalFinishedTasks / allSprintsStats.length,
       totalHoursAverage: totalHours / allSprintsStats.length,
+      totalFinishedTasks,
+      totalProgressTasks,
+      totalTodoTasks,
+      totalBlockedTasks,
     }
   }
   static sprintsStatsTable(sprintsArray) {

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "autoprefixer": "^10",
-    "chart.js": "^3.9.1",
+    "chart.js": "^4.0.1",
     "core-js": "^3.8.3",
     "date-fns": "^2.29.3",
     "firebase": "^9.9.1",
@@ -18,7 +18,7 @@
     "tailwindcss": "^3",
     "uuid": "^9.0.0",
     "vue": "^3.2.13",
-    "vue-chart-3": "^3.1.8",
+    "vue-chartjs": "^5.0.1",
     "vue-router": "^4.0.3",
     "vue-universal-modal": "^1.1.4",
     "vuedraggable": "^4.1.0",
