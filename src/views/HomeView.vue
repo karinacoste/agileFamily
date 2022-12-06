@@ -13,12 +13,47 @@
       </div>
     </Modal>
     <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
-    <h1 class="text-2xl font-bold ml-7 my-5">SPRINT 1 {{ userDisplayName }}</h1>
-    <!-- <h1 class="text-5xl">{{ showedUser.email }}</h1> -->
-    <!-- <button @click="addUser">Crear user</button>
-    <button @click="showUsers">Show user</button> -->
+    <div class="ml-7 mt-3 mb-4">
+      <VDropdown placement="bottom-start">
+        <!-- This will be the popover target (for the events and position) -->
+        <button
+          class="flex border-b pb-1 border-gray-100 hover:border-b hover:border-gray-400"
+          @click="openSprintMenu"
+        >
+          <div class="flex align-middle items-center">
+            <span class="text-2xl font-bold">{{ sprintName }}</span>
+            <span class="text-lg ml-3"> {{ sprintDescription }}</span>
+            <span class="w-5 ml-2 pt-1"
+              ><ChevronDownIcon
+                class="transition-transform duration-300"
+                :class="{ 'rotate-180': isOpenSprintMenu }"
+              ></ChevronDownIcon
+            ></span>
+          </div>
+        </button>
+        <!-- This will be the content of the popover -->
+        <template #popper="{ hide }">
+          <div
+            class="flex left-0"
+            v-if="sprints.length"
+            @click="openSprintMenu"
+          >
+            <ul class="p-2" @click="hide()">
+              <li
+                class="hover:bg-slate-200 px-2 py-1 cursor-pointer"
+                v-for="(sprint, index) in sprints"
+                :key="index"
+                @click="showSprintById(sprint.id)"
+              >
+                <span class="font-bold">{{ sprint.name }}</span>
+                {{ sprint.description }}
+              </li>
+            </ul>
+          </div>
+        </template>
+      </VDropdown>
+    </div>
     <div class="w-full flex justify-between p-2 m-auto">
-      <!-- <p>sprints{{ sprints[0].objectives }}</p> -->
       <div class="w-1/5 px-5">
         <div
           class="w-full mt-0.5 pb-1 items-center justify-between flex font-bold border-b-4 border-gray-300"
@@ -184,16 +219,13 @@
         </div>
       </template>
     </draggable>
-
-    <!-- <div class="w-full px-7">
-      <div class="h-1 bg-gray-300"></div>
-    </div> -->
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import GenericModal from '@/components/modals/GenericModal.vue'
+import { Timestamp } from 'firebase/firestore'
 import {
   data,
   ref,
@@ -207,6 +239,7 @@ import {
 import { useStore } from 'vuex'
 import InternalNavBar from '@/components/nav/InternalNavBar.vue'
 import OptionsIcon from '@/components/icons/OptionsIcon.vue'
+import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
 // import DynamicIcons from '@/components/icons/DynamicIcons.vue'
 import draggable from 'vuedraggable'
 import {
@@ -217,6 +250,7 @@ import {
   endOfISOWeek,
   getWeek,
   getISOWeek,
+  format,
   formatISO,
 } from 'date-fns'
 const store = useStore()
@@ -230,13 +264,50 @@ export default defineComponent({
     draggable,
     GenericModal,
     OptionsIcon,
+    ChevronDownIcon,
   },
 
   setup() {
     const store = useStore()
+    const sprintById = computed(() => store.state.sprintById)
+    const sprintName = computed(
+      () => store.state.sprintById.name || `Semana ${weekNumber(new Date())}`
+    )
+    const sprintDescription = computed(
+      () =>
+        store.state.sprintById.description ||
+        `(del ${startOfWeek(new Date())} al ${endOfWeek(new Date())})`
+    )
+    async function showSprintById(sprintId) {
+      await store.dispatch('getSprintById', sprintId)
+    }
+    let isOpenSprintMenu = ref(false)
+    const openSprintMenu = () =>
+      (isOpenSprintMenu.value = !isOpenSprintMenu.value)
+    fetchAllSprint()
+    async function fetchAllSprint() {
+      await store.dispatch('getSprints')
+    }
     let currentDate = new Date()
-    let currentYear = currentDate.getFullYear()
-    const weekNumber = ref(getISOWeek(new Date()))
+    let selectedYear = (date) => {
+      return date.getFullYear() || currentDate.getFullYear()
+    }
+
+    const weekNumber = (date) => {
+      // const timestamp = dateFromFirebase.toDate()
+      return getISOWeek(date)
+    }
+    const startOfWeek = (date) => {
+      return format(startOfISOWeek(date), 'd-M')
+    }
+
+    const endOfWeek = (date) => {
+      return format(endOfISOWeek(date), 'd-M-Y')
+    }
+    const daysPerWeeks = new Date(2022, 0, 295)
+    const getDate = daysPerWeeks.getDate()
+    const end = startOfISOWeek(currentDate)
+    const dateTests = formatISO(endOfISOWeek(currentDate), { format: 'basic' })
     allAccountInformation()
     let isWaiting = computed(() => store.getters.getterIsWaiting)
     async function allAccountInformation() {
@@ -244,9 +315,8 @@ export default defineComponent({
         await store.dispatch('fetchAllAccountInformation')
         await store.dispatch(
           'getSprintById',
-          `${currentYear}-${weekNumber.value}`
+          `${selectedYear(new Date())}-${weekNumber(new Date())}`
         )
-        console.log('allAccoount')
       } catch (error) {
         console.log('Error allAccoount', error)
       }
@@ -266,7 +336,6 @@ export default defineComponent({
     let allUsersInfObject = computed(() => store.getters.getterUsersInfo)
     let allUsers = computed(() => store.state.allUsersInformations)
     // const priorities = computed(() => store.state.priorities)
-    const sprintById = computed(() => store.state.sprintById)
     let modalTitle = ref('')
     let modalComponent = ref('')
     let modalData = ref({})
@@ -313,7 +382,6 @@ export default defineComponent({
         sprintById.value.objectives[getObjectiveIndex][task.state].unshift(
           task.taskProperties
         )
-        console.log('Enrtra', task.taskProperties)
       }
       // Si es un objetivo nuevo se añade al comienzo del array de objetivos
 
@@ -326,19 +394,7 @@ export default defineComponent({
     function closeModal() {
       isShow.value = false
     }
-    const daysPerWeeks = new Date(2022, 0, 295)
-    const getDate = daysPerWeeks.getDate()
-    const end = startOfISOWeek(currentDate)
-    // const dateTests = getWeek(currentDate, { weekStartsOn: 1 })
-    //const dateTests = formatISO(endOfISOWeek(currentDate), { format: 'basic' })
-    const firstDayOfWeek = getTime(new Date(startOfISOWeek(currentDate)))
-    const dateTests = addDays(new Date(firstDayOfWeek), 6)
-
-    const birthday = new Date()
     const sprints = computed(() => store.state.sprints)
-    const objectives = computed(() => store.state.sprints[0].objectives)
-
-    // const objectives = ref(store.state.sprints[0].objectives)
     watch(
       () => sprintById.value.objectives,
       (newValue, oldValue) => {
@@ -354,9 +410,14 @@ export default defineComponent({
               console.error('Error getAppUsers', e)
             }
           } else {
+            console.log('count++', count)
             const data = {
-              id: `${currentYear}-${weekNumber.value}`,
-              name: `Sprint ${weekNumber.value}`,
+              id: `${selectedYear(new Date())}-${weekNumber(new Date())}`,
+              creationDate: currentDate,
+              name: `Semana ${weekNumber(new Date())}`,
+              description: `(del ${startOfWeek(new Date())} al ${endOfWeek(
+                new Date()
+              )})`,
               objectives: newValue,
             }
             store.dispatch('createSprint', data)
@@ -372,15 +433,17 @@ export default defineComponent({
     const userAccountId = ref(store.state.user.accountId)
     const authUser = ref(store.state.authUser)
     const userIdToken = ref(store.state.userIdToken)
-    // const showUsers = async () => {
-    //   try {
-    //     store.dispatch('getAppUsers')
-    //   } catch (e) {
-    //     console.error('Error getAppUsers', e)
-    //   }
-    // }
 
     return {
+      isOpenSprintMenu,
+      openSprintMenu,
+      showSprintById,
+      sprintDescription,
+      sprintName,
+      startOfWeek,
+      endOfWeek,
+      weekNumber,
+      selectedYear,
       userAssignedName,
       isWaiting,
       userImage,
@@ -392,20 +455,15 @@ export default defineComponent({
       modalComponent,
       modalData,
       showGenericModal,
-      weekNumber,
       isShow,
       showModal,
       closeModal,
       sprintById,
       dateTests,
-      currentYear,
       watchEffect,
-      objectives,
       states,
       sprints,
-      // sprints: computed(() => store.state.sprints),
       userAccountId,
-      // showUsers,
       userDisplayName,
       authUser,
       userIdToken,

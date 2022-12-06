@@ -79,7 +79,6 @@ export default defineComponent({
 
   setup() {
     const store = useStore()
-    // store.dispatch('sendAnEmail')
     const account = computed(() => store.state.account)
     let modalTitle = ref('')
     let modalComponent = ref('')

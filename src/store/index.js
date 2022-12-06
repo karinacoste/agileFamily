@@ -16,10 +16,8 @@ import {
   collection,
   onSnapshot,
   query,
-  where,
   doc,
   addDoc,
-  getDocs,
   getDoc,
   setDoc,
   updateDoc,
@@ -127,7 +125,6 @@ export default createStore({
         if (docSnap.exists()) {
           oneUser = docSnap.data()
         } else {
-          // doc.data() will be undefined in this case
           console.log('No such user!')
         }
       } catch (error) {
@@ -164,7 +161,7 @@ export default createStore({
         console.log('Account', context.state.accountId)
       } else {
         // doc.data() will be undefined in this case
-        console.log('No such account!')
+        console.log('No exite esa cuenta!')
       }
     },
     async fetchAllAccountInformation(context) {
@@ -251,7 +248,7 @@ export default createStore({
           context.commit('setSprintById', docSnap.data())
         } else {
           context.commit('setSprintById', { objectives: [] })
-          console.log('No such document!')
+          console.log('No existe ese sprint!')
         }
       }
     },
