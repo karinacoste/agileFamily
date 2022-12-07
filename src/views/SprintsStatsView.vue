@@ -4,7 +4,7 @@
     <div class="flex md:w-7/12 border-b border-gray-300">
       <h1 class="text-2xl font-semibold mt-5 mb-2">Estadísticas</h1>
     </div>
-
+    {{ sprints }}
     <div class="flex md:w-7/12 w-full mt-6 items-end">
       <div class="w-2/6 flex flex-col items-baseline h-full">
         <div class="mt-4">
@@ -58,9 +58,9 @@
         <div class="w-44 leading-5 text-center">T. Bloqueadas</div>
         <div class="w-44 leading-5 text-center">Total de horas</div>
       </div>
-      <div
-        v-for="sprint in sprints"
-        :key="sprint"
+      <!-- <div
+        v-for="(sprint, index) in sprints"
+        :key="index"
         class="flex items-center w-full py-2 border-b border-gray-200"
       >
         <div class="w-64">
@@ -79,7 +79,7 @@
         <div class="w-44 text-center">{{ sprint.tasks.todoTasks }}</div>
         <div class="w-44 text-center">{{ sprint.tasks.blockedTasks }}</div>
         <div class="w-44 text-center">{{ sprint.hours }}</div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -111,7 +111,7 @@ export default {
     fetchAllSprint()
     const userDisplayName = ref(store.state.user.displayName)
     const sprintsAverage = computed(() => store.getters['getterSprintsAverage'])
-    // const sprints = computed(() => store.getters['getterSprintsTable'])
+    const sprints = computed(() => store.getters['getterSprintsTable'])
 
     // store.getters['getterSprints']
 
@@ -145,7 +145,7 @@ export default {
     }
     return {
       userDisplayName,
-      // sprints,
+      sprints,
       sprintsAverage,
       testData,
       options,
