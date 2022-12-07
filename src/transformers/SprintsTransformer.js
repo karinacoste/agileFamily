@@ -1,6 +1,6 @@
 export default class SprintsTransformer {
-  static sprintsStatsAverages(sprintsArray) {
-    const allSprintsStats = this.sprintsStatsTable(sprintsArray)
+  static async sprintsStatsAverages(sprintsArray) {
+    const allSprintsStats = await this.sprintsStatsTable(sprintsArray)
     let totalAchievedObjectives = 0
     let totalFinishedTasks = 0
     let totalHours = 0
