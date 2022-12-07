@@ -52,7 +52,7 @@ export default createStore({
       state.waiting = payload
     },
     setSprints(state, payload) {
-      state.sprints = payload
+      state.sprints = payload.reverse()
     },
     setAccount(state, payload) {
       state.account = payload

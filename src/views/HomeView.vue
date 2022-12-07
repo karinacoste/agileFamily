@@ -41,7 +41,7 @@
             <ul class="p-2" @click="hide()">
               <li
                 class="hover:bg-slate-200 px-2 py-1 cursor-pointer"
-                v-for="(sprint, index) in sprints.reverse()"
+                v-for="(sprint, index) in sprints"
                 :key="index"
                 @click="showSprintById(sprint.id)"
               >
@@ -396,7 +396,10 @@ export default defineComponent({
     function closeModal() {
       isShow.value = false
     }
-    const sprints = computed(() => store.state.sprints)
+    const sprints = computed(() => {
+      const orederedSprints = store.state.sprints
+      return orederedSprints
+    })
     watch(
       () => sprintById.value.objectives,
       (newValue, oldValue) => {

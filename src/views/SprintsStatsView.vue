@@ -59,7 +59,7 @@
         <div class="w-44 leading-5 text-center">Total de horas</div>
       </div>
       <div
-        v-for="(sprint, index) in sprintsTable.reverse()"
+        v-for="(sprint, index) in sprintsTable"
         :key="index"
         class="flex items-center w-full py-2 border-b border-gray-200"
       >

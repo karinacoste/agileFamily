@@ -1,0 +1,58 @@
+[
+  {
+    "week": "Semana 46",
+    "objectives": 4,
+    "achievedObjectives": 4,
+    "tasks": {
+      "totalTasks": 9,
+      "todoTasks": 0,
+      "progressTasks": 0,
+      "completedTasks": 9,
+      "blockedTasks": 0
+    },
+    "description": "(del 14-11 al 20-11-2022)",
+    "hours": 25
+  },
+  {
+    "week": "Semana 47",
+    "objectives": 2,
+    "achievedObjectives": 2,
+    "tasks": {
+      "totalTasks": 5,
+      "todoTasks": 0,
+      "progressTasks": 0,
+      "completedTasks": 5,
+      "blockedTasks": 0
+    },
+    "description": "(del 21-11 al 27-11-2022)",
+    "hours": 10
+  },
+  {
+    "week": "Semana 48",
+    "objectives": 3,
+    "achievedObjectives": 0,
+    "tasks": {
+      "totalTasks": 8,
+      "todoTasks": 0,
+      "progressTasks": 6,
+      "completedTasks": 0,
+      "blockedTasks": 2
+    },
+    "description": "(del 28-11 al 04-12-2022)",
+    "hours": 18
+  },
+  {
+    "week": "Semana 49",
+    "objectives": 1,
+    "achievedObjectives": 0,
+    "tasks": {
+      "totalTasks": 5,
+      "todoTasks": 2,
+      "progressTasks": 3,
+      "completedTasks": 0,
+      "blockedTasks": 0
+    },
+    "description": "(del 5-12 al 11-12-2022)",
+    "hours": 19
+  }
+]
