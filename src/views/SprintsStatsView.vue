@@ -32,7 +32,9 @@
         <p class="text-lg bg-gray-200 px-2 py-1 w-11/12">MEDIA SEMANAL</p>
       </div>
       <div class="w-2/6 flex flex-col">
-        <div><Doughnut :data="testData" :options="options" /></div>
+        <div>
+          <Doughnut v-if="sprintsAverage" :data="testData" :options="options" />
+        </div>
         <div class="text-center m-auto text-lg bg-gray-200 px-2 py-1 w-11/12">
           TOTAL DE TAREAS
         </div>
@@ -109,27 +111,6 @@ export default {
     // store.getters['getterSprints']
     const sprints = computed(() => store.getters['getterSprintsTable'])
     const sprintsAverage = computed(() => store.getters['getterSprintsAverage'])
-    // const doughnutRef = ref()
-    // const testData = computed(() => ({
-    //   labels: ['Por hacer', 'En curso', 'Bloquedas', 'Hechas'],
-    //   datasets: [
-    //     {
-    //       data: [
-    //         sprintsAverage.value.totalTodoTasks,
-    //         sprintsAverage.value.totalProgressTasks,
-    //         sprintsAverage.value.totalBlockedTasks,
-    //         sprintsAverage.value.totalFinishedTasks,
-    //       ],
-    //       backgroundColor: ['#6B7280', '#3B82F6', '#EF4444', '#22C55E'],
-    //     },
-    //   ],
-    // }))
-    const data = ref([
-      sprintsAverage.value.totalTodoTasks,
-      sprintsAverage.value.totalProgressTasks,
-      sprintsAverage.value.totalBlockedTasks,
-      sprintsAverage.value.totalFinishedTasks,
-    ])
 
     const options = ref({
       responsive: true,
@@ -147,10 +128,10 @@ export default {
         {
           backgroundColor: ['#6B7280', '#3B82F6', '#EF4444', '#22C55E'],
           data: [
-            sprintsAverage.value.totalTodoTasks,
-            sprintsAverage.value.totalProgressTasks,
-            sprintsAverage.value.totalBlockedTasks,
-            sprintsAverage.value.totalFinishedTasks,
+            sprintsAverage.value.totalTodoTasks || 0,
+            sprintsAverage.value.totalProgressTasks || 0,
+            sprintsAverage.value.totalBlockedTasks || 0,
+            sprintsAverage.value.totalFinishedTasks || 0,
           ],
         },
       ],
