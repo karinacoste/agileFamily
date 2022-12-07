@@ -84,10 +84,10 @@ export default class SprintsTransformer {
           objectivesArray[key].blocked?.length +
           objectivesArray[key].completed?.length
 
-        todoTasks += objectivesArray[key].todo?.length || 0
-        progressTasks += objectivesArray[key].progress?.length || 0
-        completedTasks += objectivesArray[key].completed?.length || 0
-        blockedTasks += objectivesArray[key].blocked?.length || 0
+        todoTasks += objectivesArray[key].todo.length || 0
+        progressTasks += objectivesArray[key].progress.length || 0
+        completedTasks += objectivesArray[key].completed.length || 0
+        blockedTasks += objectivesArray[key].blocked.length || 0
       }
     }
     return {

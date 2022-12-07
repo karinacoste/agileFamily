@@ -4,7 +4,7 @@
     <div class="flex md:w-7/12 border-b border-gray-300">
       <h1 class="text-2xl font-semibold mt-5 mb-2">Estadísticas</h1>
     </div>
-    {{ sprintsTable }}
+
     <div class="flex md:w-7/12 w-full mt-6 items-end">
       <div class="w-2/6 flex flex-col items-baseline h-full">
         <div class="mt-4">
@@ -33,7 +33,7 @@
       </div>
       <div class="w-2/6 flex flex-col">
         <div>
-          <!-- <Doughnut v-if="sprintsAverage" :data="testData" :options="options" /> -->
+          <Doughnut v-if="sprintsAverage" :data="testData" :options="options" />
         </div>
         <div class="text-center m-auto text-lg bg-gray-200 px-2 py-1 w-11/12">
           TOTAL DE TAREAS
@@ -58,8 +58,8 @@
         <div class="w-44 leading-5 text-center">T. Bloqueadas</div>
         <div class="w-44 leading-5 text-center">Total de horas</div>
       </div>
-      <!-- <div
-        v-for="(sprint, index) in sprints"
+      <div
+        v-for="(sprint, index) in sprintsTable"
         :key="index"
         class="flex items-center w-full py-2 border-b border-gray-200"
       >
@@ -71,15 +71,18 @@
           {{ sprint.achievedObjectives }} de {{ sprint.objectives }}
         </div>
         <div class="w-44 text-center">
-          {{ sprint.tasks.completedTasks }} de {{ sprint.tasks.totalTasks }}
+          {{ sprint.tasks.completedTasks }} de
+          {{ sprint.tasks.totalTasks }}
         </div>
         <div class="w-44 text-center">
           {{ sprint.tasks.progressTasks }}
         </div>
         <div class="w-44 text-center">{{ sprint.tasks.todoTasks }}</div>
-        <div class="w-44 text-center">{{ sprint.tasks.blockedTasks }}</div>
+        <div class="w-44 text-center">
+          {{ sprint.tasks.blockedTasks }}
+        </div>
         <div class="w-44 text-center">{{ sprint.hours }}</div>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
@@ -104,7 +107,7 @@ import { useStore } from 'vuex'
 export default {
   components: {
     InternalNavBar,
-    // Doughnut,
+    Doughnut,
   },
   setup() {
     const store = useStore()
