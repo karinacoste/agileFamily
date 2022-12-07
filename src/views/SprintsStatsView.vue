@@ -4,7 +4,7 @@
     <div class="flex md:w-7/12 border-b border-gray-300">
       <h1 class="text-2xl font-semibold mt-5 mb-2">Estadísticas</h1>
     </div>
-    {{ sprints }}
+    {{ sprintsTable }}
     <div class="flex md:w-7/12 w-full mt-6 items-end">
       <div class="w-2/6 flex flex-col items-baseline h-full">
         <div class="mt-4">
@@ -111,7 +111,7 @@ export default {
     fetchAllSprint()
     const userDisplayName = ref(store.state.user.displayName)
     const sprintsAverage = computed(() => store.getters['getterSprintsAverage'])
-    const sprints = computed(() => store.getters['getterSprintsTable'])
+    const sprintsTable = computed(() => store.getters['getterSprintsTable'])
 
     // store.getters['getterSprints']
 
@@ -145,7 +145,7 @@ export default {
     }
     return {
       userDisplayName,
-      sprints,
+      sprintsTable,
       sprintsAverage,
       testData,
       options,
