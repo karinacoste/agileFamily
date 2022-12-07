@@ -12,7 +12,6 @@
         ></generic-modal>
       </div>
     </Modal>
-    VERSIÓN 11
     <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
     <div class="ml-7 mt-3 mb-4">
       <VDropdown placement="bottom-start">
@@ -42,7 +41,7 @@
             <ul class="p-2" @click="hide()">
               <li
                 class="hover:bg-slate-200 px-2 py-1 cursor-pointer"
-                v-for="(sprint, index) in sprints"
+                v-for="(sprint, index) in sprints.reverse()"
                 :key="index"
                 @click="showSprintById(sprint.id)"
               >
