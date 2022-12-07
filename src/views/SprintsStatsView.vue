@@ -33,7 +33,7 @@
       </div>
       <div class="w-2/6 flex flex-col">
         <div>
-          <Doughnut v-if="sprintsAverage" :data="testData" :options="options" />
+          <!-- <Doughnut v-if="sprintsAverage" :data="testData" :options="options" /> -->
         </div>
         <div class="text-center m-auto text-lg bg-gray-200 px-2 py-1 w-11/12">
           TOTAL DE TAREAS
@@ -102,7 +102,7 @@ import { useStore } from 'vuex'
 export default {
   components: {
     InternalNavBar,
-    Doughnut,
+    // Doughnut,
   },
   setup() {
     const store = useStore()
