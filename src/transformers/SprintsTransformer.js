@@ -27,7 +27,7 @@ export default class SprintsTransformer {
     }
   }
   static sprintsStatsTable(sprintsArray) {
-    return sprintsArray.reverse().map((sprint) => {
+    return sprintsArray.map((sprint) => {
       const objectives = sprint.objectives.length || 0
       const hours = this.getHours(sprint.objectives)
       return {
