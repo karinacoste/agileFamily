@@ -84,9 +84,9 @@
 
 <script>
 import InternalNavBar from '@/components/nav/InternalNavBar.vue'
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import { Doughnut } from 'vue-chartjs'
-ChartJS.register(ArcElement, Tooltip, Legend)
+// import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+// import { Doughnut } from 'vue-chartjs'
+// ChartJS.register(ArcElement, Tooltip, Legend)
 
 import {
   data,

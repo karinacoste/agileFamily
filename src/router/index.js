@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import UsersView from '../views/UsersView.vue'
+import SprintsStatsView from '../views/SprintsStatsView.vue'
 import { auth } from '../firebase/config'
 import store from '@/store'
 import { onAuthStateChanged } from 'firebase/auth'
@@ -41,7 +42,7 @@ const routes = [
   {
     path: '/SprintsStatsView',
     name: 'SprintsStatsView',
-    component: () => import('../views/SprintsStatsView.vue'),
+    component: SprintsStatsView,
     meta: {
       requiresAuth: true,
     },
