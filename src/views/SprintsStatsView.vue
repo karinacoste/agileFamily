@@ -128,10 +128,11 @@ export default {
         {
           backgroundColor: ['#6B7280', '#3B82F6', '#EF4444', '#22C55E'],
           data: [
-            sprintsAverage.value.totalTodoTasks || 0,
-            sprintsAverage.value.totalProgressTasks || 0,
-            sprintsAverage.value.totalBlockedTasks || 0,
-            sprintsAverage.value.totalFinishedTasks || 0,
+            45, 60, 60, 60,
+            // sprintsAverage.value.totalTodoTasks || 0,
+            // sprintsAverage.value.totalProgressTasks || 0,
+            // sprintsAverage.value.totalBlockedTasks || 0,
+            // sprintsAverage.value.totalFinishedTasks || 0,
           ],
         },
       ],
