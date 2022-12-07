@@ -16,7 +16,7 @@
           </p>
         </div>
         <div class="mt-4">
-          <div class="text-5xl">
+          <div v-if="printsAverage" class="text-5xl">
             {{ sprintsAverage.finishedTasksAverage }}
           </div>
           <p class="text-lg font-semibold leading-5 mt-2">Tareas finalizadas</p>
@@ -109,7 +109,7 @@ export default {
     const userDisplayName = ref(store.state.user.displayName)
     fetchAllSprint()
     // store.getters['getterSprints']
-    const sprints = computed(() => store.getters['getterSprintsTable'])
+    const sprints = computed(() => store.getters['getterSprintsTable'] || [])
     const sprintsAverage = computed(() => store.getters['getterSprintsAverage'])
 
     const options = ref({
