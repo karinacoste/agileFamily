@@ -1,6 +1,6 @@
 export default class SprintsTransformer {
-  static async sprintsStatsAverages(sprintsArray) {
-    const allSprintsStats = await this.sprintsStatsTable(sprintsArray)
+  static sprintsStatsAverages(sprintsArray) {
+    const allSprintsStats = this.sprintsStatsTable(sprintsArray)
     let totalAchievedObjectives = 0
     let totalFinishedTasks = 0
     let totalHours = 0
@@ -9,10 +9,10 @@ export default class SprintsTransformer {
     let totalBlockedTasks = 0
     for (const key in allSprintsStats) {
       totalAchievedObjectives += allSprintsStats[key].achievedObjectives
-      totalFinishedTasks += allSprintsStats[key].tasks.completedTasks
-      totalProgressTasks += allSprintsStats[key].tasks.progressTasks
-      totalTodoTasks += allSprintsStats[key].tasks.todoTasks
-      totalBlockedTasks += allSprintsStats[key].tasks.blockedTasks
+      totalFinishedTasks += allSprintsStats[key].tasks?.completedTasks || 0
+      totalProgressTasks += allSprintsStats[key].tasks?.progressTasks || 0
+      totalTodoTasks += allSprintsStats[key].tasks?.todoTasks || 0
+      totalBlockedTasks += allSprintsStats[key].tasks?.blockedTasks || 0
       totalHours += allSprintsStats[key].hours
     }
     return {
@@ -29,14 +29,14 @@ export default class SprintsTransformer {
   static sprintsStatsTable(sprintsArray) {
     return sprintsArray.reverse().map((sprint) => {
       const objectives = sprint.objectives.length || 0
-
+      const hours = this.getHours(sprint.objectives)
       return {
         week: sprint.name || '',
         objectives,
         achievedObjectives: this.getAchievedObjectives(sprint.objectives),
         tasks: this.getTasks(sprint.objectives),
         description: sprint.description,
-        hours: this.getHours(sprint.objectives),
+        hours,
       }
     })
   }
@@ -84,10 +84,10 @@ export default class SprintsTransformer {
           objectivesArray[key].blocked?.length +
           objectivesArray[key].completed?.length
 
-        todoTasks += objectivesArray[key].todo?.length
-        progressTasks += objectivesArray[key].progress?.length
-        completedTasks += objectivesArray[key].completed?.length
-        blockedTasks += objectivesArray[key].blocked?.length
+        todoTasks += objectivesArray[key].todo?.length || 0
+        progressTasks += objectivesArray[key].progress?.length || 0
+        completedTasks += objectivesArray[key].completed?.length || 0
+        blockedTasks += objectivesArray[key].blocked?.length || 0
       }
     }
     return {
