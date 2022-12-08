@@ -12,7 +12,7 @@
         ></generic-modal>
       </div>
     </Modal>
-    <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
+    <internal-nav-bar :user="user"></internal-nav-bar>
     <div class="ml-7 mt-3 mb-4">
       <VDropdown placement="bottom-start">
         <!-- This will be the popover target (for the events and position) -->
@@ -432,7 +432,7 @@ export default defineComponent({
       { deep: true }
     )
     const states = ['todo', 'progress', 'blocked', 'completed']
-    const userDisplayName = ref(store.state.user.displayName)
+    const user = ref(store.state.user)
     // const sprints = ref(store.getters['getterSprints'])
     // const sprints = ref(store.state.sprints)
     const userAccountId = ref(store.state.user.accountId)
@@ -469,7 +469,7 @@ export default defineComponent({
       states,
       sprints,
       userAccountId,
-      userDisplayName,
+      user,
       authUser,
       userIdToken,
     }

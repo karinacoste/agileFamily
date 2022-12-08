@@ -1,28 +1,64 @@
 <template>
   <div class="relative h-16 w-full bg-white">
     <div
-      class="absolute flex inset-x-0 top-0 h-16 p-4 shadow-md items-center justify-center"
+      class="absolute flex inset-x-0 top-0 px-4 py-2 shadow-md items-center justify-center"
     >
       <div class="flex w-full">
         <nav class="w-full relative flex items-center mx-2">
-          <figure>
-            <img
-              src="../../assets/images/navBarLogo.png"
-              alt="agileFamily Logo"
-            />
-          </figure>
-          <div class="flex ml-auto mt-1">
-            <nav>
+          <router-link to="/">
+            <figure>
+              <img
+                src="../../assets/images/navBarLogo.png"
+                alt="agileFamily Logo"
+              />
+            </figure>
+          </router-link>
+          <div class="flex ml-auto mt-2 items-center">
+            <nav class="mr-12">
               <router-link to="/">Home</router-link> |
               <router-link to="/SprintsStatsView">Estadísticas</router-link> |
-              <router-link to="/UsersView">Usuarios</router-link> |<span>{{
-                user
-              }}</span
-              >|
+              <router-link to="/UsersView">Usuarios</router-link>
               <!-- <router-link to="/LoginView">Login karina</router-link> |
               <router-link to="/SignupView">Signup karina</router-link> | -->
             </nav>
-            <button @click="handleClick">Logout</button>
+
+            <!-- /////////////////////// -->
+            <VDropdown placement="bottom-end">
+              <!-- This will be the popover target (for the events and position) -->
+              <button class="flex ml-4">
+                <figure class="w-10">
+                  <img :src="userImage" :alt="user.displayName" />
+                </figure>
+              </button>
+              <!-- This will be the content of the popover -->
+              <template #popper="{ hide }">
+                <div class="flex py-4 left-0">
+                  <ul class="px-2 w-full" @click="hide()">
+                    <li
+                      class="my-1 flex items-center w-full hover:bg-slate-200 cursor-pointer px-4 py-2"
+                    >
+                      <user-icon class="w-5 mr-2" />
+                      Editar perfil
+                    </li>
+                    <li
+                      class="my-1 flex items-center w-full hover:bg-slate-200 cursor-pointer px-4 py-2"
+                      @click="handleClick"
+                    >
+                      <span><lock-icon class="w-5 mr-2" /></span>
+                      <span> Cambiar contraseña</span>
+                    </li>
+                    <li
+                      class="my-1 flex items-center w-full hover:bg-slate-200 cursor-pointer px-4 py-2"
+                      @click="handleClick"
+                    >
+                      <span><off-icon class="w-5 mr-2" /></span>
+                      <span>Cerrar sesión</span>
+                    </li>
+                  </ul>
+                </div>
+              </template>
+            </VDropdown>
+            <!-- ////////////////////////////////// -->
           </div>
         </nav>
       </div>
@@ -32,20 +68,34 @@
 
 <script>
 import { useStore } from 'vuex'
-
+import UserIcon from '@/components/icons/UserIcon.vue'
+import LockIcon from '@/components/icons/LockIcon.vue'
+import OffIcon from '@/components/icons/OffIcon.vue'
+import {
+  ref,
+  computed,
+  watchEffect,
+  watch,
+  defineComponent,
+  defineAsyncComponent,
+} from 'vue'
 export default {
+  components: { UserIcon, LockIcon, OffIcon },
   props: {
     user: {
-      type: String,
-      default: 'email',
+      type: Object,
+      default: () => {},
     },
   },
-  setup() {
+  setup(props) {
     const store = useStore()
+    const userImage = computed(() =>
+      require(`@/assets/images/users/${props.user.img}.png`)
+    )
     const handleClick = () => {
       store.dispatch('logout')
     }
-    return { store, handleClick }
+    return { store, handleClick, userImage }
   },
 }
 </script>

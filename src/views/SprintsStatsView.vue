@@ -1,6 +1,6 @@
 <template>
   <div class="w-full flex flex-col items-center min-h-max h-full">
-    <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
+    <internal-nav-bar :user="user"></internal-nav-bar>
     <div class="flex md:w-8/12 border-b border-gray-300">
       <h1 class="text-2xl font-semibold mt-5 mb-2">Estadísticas</h1>
     </div>
@@ -146,7 +146,7 @@ export default {
   setup() {
     const store = useStore()
     fetchAllSprint()
-    const userDisplayName = ref(store.state.user.displayName)
+    const user = ref(store.state.user)
     const sprintsAverage = computed(() => store.getters['getterSprintsAverage'])
     const sprintsTable = computed(() => store.getters['getterSprintsTable'])
 
@@ -221,7 +221,7 @@ export default {
       await store.dispatch('getSprints')
     }
     return {
-      userDisplayName,
+      user,
       sprintsTable,
       sprintsAverage,
       barDataChart,

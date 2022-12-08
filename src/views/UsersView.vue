@@ -11,7 +11,7 @@
         ></generic-modal>
       </div>
     </Modal>
-    <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
+    <internal-nav-bar :user="user"></internal-nav-bar>
     <div class="flex md:w-7/12 border-b border-gray-300">
       <h1 class="text-2xl font-semibold ml-7 mt-5 mb-2">Usuarios</h1>
     </div>
@@ -120,7 +120,7 @@ export default defineComponent({
     function closeModal() {
       isShow.value = false
     }
-    const userDisplayName = ref(store.state.user.displayName)
+    const user = ref(store.state.user)
     const userAccountId = ref(store.state.user.accountId)
     const authUser = ref(store.state.authUser)
     const userIdToken = ref(store.state.userIdToken)
@@ -146,7 +146,7 @@ export default defineComponent({
       account,
       userAccountId,
       showUsers,
-      userDisplayName,
+      user,
       authUser,
       userIdToken,
     }
