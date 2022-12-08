@@ -1,17 +1,17 @@
 <template>
   <div class="w-full flex flex-col items-center min-h-max h-full">
     <internal-nav-bar :user="userDisplayName"></internal-nav-bar>
-    <div class="flex md:w-7/12 border-b border-gray-300">
+    <div class="flex md:w-8/12 border-b border-gray-300">
       <h1 class="text-2xl font-semibold mt-5 mb-2">Estadísticas</h1>
     </div>
 
-    <div class="flex md:w-7/12 w-full mt-6 items-end">
-      <div class="w-2/6 flex flex-col items-baseline h-full">
+    <div class="flex md:w-8/12 w-full mt-6 items-end">
+      <div class="w-1/6 flex flex-col items-baseline h-full">
         <div class="mt-4">
           <div class="text-5xl">
             {{ sprintsAverage.achievedObjectivesAverage }}
           </div>
-          <p class="text-lg font-semibold leading-5 mt-2">
+          <p class="text-lg w-11/12 font-semibold leading-5 mt-2">
             Objetivos alcanzados
           </p>
         </div>
@@ -29,24 +29,41 @@
             Horas dedicadas
           </p>
         </div>
-        <p class="text-lg bg-gray-200 px-2 py-1 w-11/12">MEDIA SEMANAL</p>
+        <p class="bg-gray-200 text-center px-2 py-2 w-11/12">MEDIA SEMANAL</p>
       </div>
-      <div class="w-2/6 flex flex-col">
-        <div>
-          <Doughnut v-if="sprintsAverage" :data="testData" :options="options" />
+      <!-- ///////////////////////////////////// -->
+      <div class="w-5/6 flex items-baseline h-full">
+        <!-- ////////////////////////// -->
+        <div class="w-3/6 flex flex-col">
+          <div class="mb-6">
+            <Doughnut
+              v-if="sprintsAverage"
+              :data="doughnutDataChart"
+              :options="options"
+              width="230"
+            />
+          </div>
+          <div class="text-center mx-auto bg-gray-200 px-2 py-2 w-11/12">
+            TOTAL DE TAREAS
+          </div>
         </div>
-        <div class="text-center m-auto text-lg bg-gray-200 px-2 py-1 w-11/12">
-          TOTAL DE TAREAS
+        <!-- ////////////////////////// -->
+        <div class="w-3/6 flex flex-col">
+          <div class="mb-6 w-full px-6 mx-auto">
+            <Bar
+              :data="barDataChart"
+              :options="barChartOptions"
+              height="250"
+              width="100"
+            />
+          </div>
+          <p class="bg-gray-200 px-2 py-2 w-12/12 text-center ml-4">
+            OBJETIVOS POR SEMANA
+          </p>
         </div>
-      </div>
-
-      <div class="w-2/6">
-        <p class="text-lg bg-gray-200 px-2 py-1 w-11/12 ml-auto text-right">
-          OBJETIVOS Y TAREAS
-        </p>
       </div>
     </div>
-    <div class="flex flex-col md:w-7/12 mt-16">
+    <div class="flex flex-col md:w-8/12 mt-16">
       <div
         class="flex w-full items-center font-semibold pb-1 border-b border-gray-500"
       >
@@ -89,9 +106,25 @@
 
 <script>
 import InternalNavBar from '@/components/nav/InternalNavBar.vue'
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import { Doughnut } from 'vue-chartjs'
-ChartJS.register(ArcElement, Tooltip, Legend)
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+} from 'chart.js'
+import { Doughnut, Bar } from 'vue-chartjs'
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+)
 
 import {
   data,
@@ -108,6 +141,7 @@ export default {
   components: {
     InternalNavBar,
     Doughnut,
+    Bar,
   },
   setup() {
     const store = useStore()
@@ -127,8 +161,48 @@ export default {
         },
       },
     })
+    const barChartOptions = ref({
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+      },
+    })
+    const barDataChart = computed(() => {
+      const objectiveInfoArray = sprintsTable.value.slice(-4)
 
-    const testData = computed(() => ({
+      return {
+        labels: objectiveInfoArray.map((item) => item.week),
+        datasets: [
+          {
+            label: 'Obj. no alcanzados',
+            data: objectiveInfoArray.map(
+              (item) => item.objectives - item.achievedObjectives
+            ),
+            backgroundColor: '#6B7280',
+            stack: 'Stack 0',
+          },
+          {
+            label: 'Obj. alcanzados',
+            data: objectiveInfoArray.map((item) => item.achievedObjectives),
+            backgroundColor: '#22C55E',
+            stack: 'Stack 0',
+          },
+        ],
+      }
+    })
+
+    const doughnutDataChart = computed(() => ({
       labels: ['Por hacer', 'En curso', 'Bloqueada', 'Hechas'],
       datasets: [
         {
@@ -150,8 +224,10 @@ export default {
       userDisplayName,
       sprintsTable,
       sprintsAverage,
-      testData,
+      barDataChart,
+      doughnutDataChart,
       options,
+      barChartOptions,
     }
   },
 }
