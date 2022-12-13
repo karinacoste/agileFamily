@@ -1,5 +1,15 @@
 <template>
   <div class="relative h-16 w-full bg-white">
+    <Modal v-model="isShow" :close="closeModal">
+      <div class="modal w-3/6 p-12">
+        <generic-modal
+          :modalTitle="modalTitle"
+          :componentName="modalComponent"
+          :modalData="modalData"
+          @onSaveEditedProfile="saveEditedProfile"
+        ></generic-modal>
+      </div>
+    </Modal>
     <div
       class="absolute flex inset-x-0 top-0 px-4 py-2 shadow-md items-center justify-center"
     >
@@ -36,13 +46,13 @@
                   <ul class="px-2 w-full" @click="hide()">
                     <li
                       class="my-1 flex items-center w-full hover:bg-slate-200 cursor-pointer px-4 py-2"
+                      @click="editProfile"
                     >
                       <user-icon class="w-5 mr-2" />
                       Editar perfil
                     </li>
                     <li
                       class="my-1 flex items-center w-full hover:bg-slate-200 cursor-pointer px-4 py-2"
-                      @click="handleClick"
                     >
                       <span><lock-icon class="w-5 mr-2" /></span>
                       <span> Cambiar contraseña</span>
@@ -71,6 +81,7 @@ import { useStore } from 'vuex'
 import UserIcon from '@/components/icons/UserIcon.vue'
 import LockIcon from '@/components/icons/LockIcon.vue'
 import OffIcon from '@/components/icons/OffIcon.vue'
+import GenericModal from '@/components/modals/GenericModal.vue'
 import {
   ref,
   computed,
@@ -80,22 +91,58 @@ import {
   defineAsyncComponent,
 } from 'vue'
 export default {
-  components: { UserIcon, LockIcon, OffIcon },
-  props: {
-    user: {
-      type: Object,
-      default: () => {},
-    },
-  },
-  setup(props) {
+  components: { UserIcon, LockIcon, OffIcon, GenericModal },
+  props: {},
+  setup() {
     const store = useStore()
+    const user = computed(() => store.state.user)
     const userImage = computed(() =>
-      require(`@/assets/images/users/${props.user.img}.png`)
+      require(`@/assets/images/users/${user.value.img}.png`)
     )
     const handleClick = () => {
       store.dispatch('logout')
     }
-    return { store, handleClick, userImage }
+    const isShow = ref(false)
+    function showModal() {
+      isShow.value = true
+    }
+    function closeModal() {
+      isShow.value = false
+    }
+    const editProfile = () => {
+      showGenericModal('Editar perfil', 'userForm', user).value
+      //  context.emit('onEditProfile')
+    }
+    let modalTitle = ref('')
+    let modalComponent = ref('')
+    let modalData = ref({})
+    async function saveEditedProfile(userData) {
+      await store.dispatch('updateUserProfile', userData)
+      closeModal()
+    }
+
+    async function showGenericModal(title, component, data) {
+      modalTitle.value = title
+      modalComponent.value = component
+      modalData.value = data
+      showModal()
+    }
+
+    return {
+      store,
+      saveEditedProfile,
+      handleClick,
+      userImage,
+      editProfile,
+      showGenericModal,
+      isShow,
+      showModal,
+      closeModal,
+      modalTitle,
+      modalComponent,
+      modalData,
+      user,
+    }
   },
 }
 </script>

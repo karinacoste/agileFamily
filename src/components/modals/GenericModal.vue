@@ -4,6 +4,7 @@
     <keep-alive>
       <component
         :is="modalComponent"
+        @onSaveEditedProfile="saveEditedProfile"
         @onSaveUser="saveUser"
         @onSaveObjective="saveObjective"
         @onSaveTask="saveTask"
@@ -60,7 +61,16 @@ export default {
     function saveUser(payload) {
       context.emit('onSaveUser', payload)
     }
-    return { modalComponent, saveObjective, saveTask, saveUser }
+    function saveEditedProfile(payload) {
+      context.emit('onSaveEditedProfile', payload)
+    }
+    return {
+      modalComponent,
+      saveObjective,
+      saveTask,
+      saveUser,
+      saveEditedProfile,
+    }
   },
 }
 </script>

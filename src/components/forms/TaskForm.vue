@@ -1,11 +1,11 @@
 <template>
   <div class="text-left mt-10">
-    <label class="ml-1 font-semibold">Nombre</label>
+    <label class="ml-1 font-semibold">Título</label>
     <input
       type="text"
       class="border w-full p-2 pl-3 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
       v-model="name"
-      placeholder="Escribe el objetivo"
+      placeholder="Escribe el título de la tarea"
     />
     <!-- // ///////////////////////////////// -->
     <div class="flex">
@@ -129,7 +129,7 @@ export default {
       const options = []
       for (let key in allUsers.value) {
         options.push({
-          text: allUsers.value[key].name,
+          text: allUsers.value[key].displayName,
           value: allUsers.value[key].uid,
         })
       }
@@ -153,7 +153,6 @@ export default {
     // if (props.modalData !== null) {
     // }
     const saveTask = () => {
-      console.log('newTask')
       let taskId = ''
       if (props.modalData.taskId) {
         taskId = props.modalData.taskId

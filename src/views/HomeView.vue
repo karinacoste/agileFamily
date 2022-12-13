@@ -202,16 +202,20 @@
                       >
                     </div>
                     <div
-                      class="flex items-center border-t border-gray-300 mt-1 pt-0.5 pr-4"
+                      class="flex 2xl:flex-nowrap flex-wrap items-center border-t border-gray-300 mt-1 pt-0.5 pr-4"
                     >
-                      <span class="ml-1">Prioridad: </span>
-                      <span class="ml-2 font-bold">
-                        {{ nestedItem.priority }}</span
-                      >
-                      <span class="ml-4">Tiempo: </span>
-                      <span class="ml-2 font-bold"
-                        >{{ nestedItem.estimateTime }}h</span
-                      >
+                      <div class="flex 2xl:flex-nowrap flex-wrap">
+                        <span class="2xl:ml-1">Prioridad:</span>
+                        <span class="2xl:ml-2 font-bold">
+                          {{ nestedItem.priority }}
+                        </span>
+                      </div>
+                      <div class="flex 2xl:flex-nowrap flex-wrap">
+                        <span class="2xl:ml-4">Tiempo:</span>
+                        <span class="2xl:ml-2 font-bold">
+                          {{ nestedItem.estimateTime }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </template>
@@ -432,7 +436,7 @@ export default defineComponent({
       { deep: true }
     )
     const states = ['todo', 'progress', 'blocked', 'completed']
-    const user = ref(store.state.user)
+    const user = computed(() => store.state.user)
     // const sprints = ref(store.getters['getterSprints'])
     // const sprints = ref(store.state.sprints)
     const userAccountId = ref(store.state.user.accountId)

@@ -293,22 +293,7 @@ export default createStore({
         console.log('sendEmail', error)
       }
     },
-    async createNewUser(context, userInfo) {
-      const usersRef = doc(db, 'users', userInfo.uid)
-      const userSnap = await getDoc(usersRef)
-      console.log('userSnap', userSnap)
-      if (!userSnap.exists()) {
-        try {
-          await setDoc(doc(db, 'users', userInfo.email), userInfo)
-          await context.dispatch('updateAccoutUsers', userInfo)
-          await context.dispatch('fetchAllAccountInformation')
-        } catch (e) {
-          console.error('Error adding new user: ', e)
-        }
-      } else {
-        throw 'Este usurio ya existe'
-      }
-    },
+
     async signup(context, userInfo) {
       // async code
       const {
@@ -400,15 +385,30 @@ export default createStore({
       context.commit('setUser', null)
       context.commit('setSprintById', { objectives: [] })
       context.commit('setAllUsersInformation', null)
+      context.commit('setSprints', [])
+      context.commit('setUserId', null)
       // window.localStorage.clear()
       router.push('/ExternalHomeView')
+    },
+    async updateUserProfile(context, userInfo) {
+      const userRef = doc(db, 'users', context.state.userId)
+      try {
+        await updateDoc(userRef, {
+          displayName: userInfo.displayName,
+          name: userInfo.name,
+          surname: userInfo.surname,
+          img: userInfo.img,
+        })
+        await context.dispatch('fetchUserById', context.state.userId)
+        await context.dispatch('fetchUsersInformation')
+      } catch (error) {}
     },
     async fetchUserById(context, uid) {
       const docRef = doc(db, 'users', uid)
       const docSnap = await getDoc(docRef)
       if (docSnap.exists()) {
         context.commit('setUser', docSnap.data())
-        // localStorage.clear()
+        context.commit('setUserId', uid)
       } else {
         // doc.data() will be undefined in this case
         console.log('No such document!')

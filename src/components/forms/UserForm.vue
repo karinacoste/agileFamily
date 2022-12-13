@@ -49,17 +49,9 @@
       placeholder="Escribe los apellidos"
     />
     <!-- // ///////////////////////////////// -->
-    <!-- // ///////////////////////////////// -->
-    <label class="ml-1 font-semibold">Email</label>
-    <input
-      type="email"
-      class="border w-full p-2 pl-3 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
-      v-model="email"
-      placeholder="Escribe el mail"
-    />
 
     <div class="py-4">
-      <CustomButton @onEvent="saveUser" />
+      <CustomButton @onEvent="saveEditedProfile" />
     </div>
   </div>
 </template>
@@ -85,49 +77,48 @@ export default {
     },
   },
   setup(props, context) {
-    const dataImages = [
-      {
-        id: '1',
-        src: 'https://unsplash.it/200?random',
-        alt: 'Alt Image 1',
-      },
-      {
-        id: '2',
-        src: 'https://unsplash.it/200?random',
-        alt: 'Alt Image 2',
-      },
-      {
-        id: '2',
-        src: 'https://unsplash.it/200?random',
-        alt: 'Alt Image 2',
-        disabled: true,
-      },
-    ]
+    // const dataImages = [
+    //   {
+    //     id: '1',
+    //     src: 'https://unsplash.it/200?random',
+    //     alt: 'Alt Image 1',
+    //   },
+    //   {
+    //     id: '2',
+    //     src: 'https://unsplash.it/200?random',
+    //     alt: 'Alt Image 2',
+    //   },
+    //   {
+    //     id: '2',
+    //     src: 'https://unsplash.it/200?random',
+    //     alt: 'Alt Image 2',
+    //     disabled: true,
+    //   },
+    // ]
 
     const store = useStore()
     const accountId = ref(store.state.user.accountId)
-    const displayName = ref('')
-    const name = ref('')
-    const surname = ref('')
-    const email = ref('')
-    const img = ref('')
+    const userId = ref(store.state.userId)
+    const displayName = ref(store.state.user.displayName)
+    const email = ref(store.state.user.email)
+    const img = ref(store.state.user.img)
+    const name = ref(store.state.user.name)
+    const surname = ref(store.state.user.surname)
     const error = ref(null)
     function changeuserImage(imgSelected) {
       img.value = imgSelected
     }
-    const saveUser = () => {
-      let newUser = {
+    const saveEditedProfile = () => {
+      let userProfile = {
         uid: email.value,
         accountId: accountId.value,
         displayName: displayName.value,
         name: name.value,
         surname: surname.value,
         email: email.value,
-        role: 'user',
         img: img.value,
       }
-      console.log('newUser', newUser)
-      context.emit('onSaveUser', newUser)
+      context.emit('onSaveEditedProfile', userProfile)
     }
     function userImage(userName) {
       let imageName = userName || 'user0'
@@ -140,9 +131,10 @@ export default {
     }
     return {
       changeuserImage,
+      userId,
       userImage,
-      dataImages,
-      saveUser,
+      // dataImages,
+      saveEditedProfile,
       accountId,
       displayName,
       name,

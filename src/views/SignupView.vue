@@ -23,6 +23,7 @@
             type="text"
             inputName="displayName"
             inputLabel="Nombre de usurio"
+            placeholder="Introduce tu nombre de usuario"
             :inputValue="displayName"
             v-model:inputValue="displayName"
           >
@@ -30,6 +31,7 @@
           <input-field
             type="text"
             inputName="name"
+            placeholder="Introduce tu nombre"
             inputLabel="Nombre"
             :inputValue="name"
             v-model:inputValue="name"
@@ -37,6 +39,7 @@
           </input-field>
           <input-field
             type="text"
+            placeholder="Introduce tu apellido"
             inputName="surname"
             inputLabel="Apellidos"
             :inputValue="surname"
@@ -47,14 +50,16 @@
           <input
             type="email"
             name="email"
+            placeholder="Introduce tu email"
             v-model="email"
             required
             class="border w-full p-2 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
           />
-          <label class="ml-1" for="password">Password:</label>
+          <label class="ml-1" for="password">Contraseña:</label>
           <input
             type="password"
             name="password"
+            placeholder="Introduce una contraseña"
             v-model="password"
             required
             class="border w-full p-2 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
