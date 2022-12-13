@@ -179,7 +179,7 @@ export default {
       },
     })
     const barDataChart = computed(() => {
-      const objectiveInfoArray = sprintsTable.value.slice(-4)
+      const objectiveInfoArray = sprintsTable.value.slice(0, 4)
 
       return {
         labels: objectiveInfoArray.map((item) => item.week),
