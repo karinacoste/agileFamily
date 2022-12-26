@@ -16,10 +16,13 @@ export default class SprintsTransformer {
       totalHours += allSprintsStats[key].hours
     }
     return {
-      achievedObjectivesAverage:
-        totalAchievedObjectives / allSprintsStats.length,
-      finishedTasksAverage: totalFinishedTasks / allSprintsStats.length,
-      totalHoursAverage: totalHours / allSprintsStats.length,
+      achievedObjectivesAverage: (
+        totalAchievedObjectives / allSprintsStats.length
+      ).toFixed(2),
+      finishedTasksAverage: (
+        totalFinishedTasks / allSprintsStats.length
+      ).toFixed(2),
+      totalHoursAverage: (totalHours / allSprintsStats.length).toFixed(2),
       totalFinishedTasks,
       totalProgressTasks,
       totalTodoTasks,

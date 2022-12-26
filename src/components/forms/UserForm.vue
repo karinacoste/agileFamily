@@ -133,7 +133,6 @@ export default {
       changeuserImage,
       userId,
       userImage,
-      // dataImages,
       saveEditedProfile,
       accountId,
       displayName,

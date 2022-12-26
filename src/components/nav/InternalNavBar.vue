@@ -37,7 +37,7 @@
               <!-- This will be the popover target (for the events and position) -->
               <button class="flex ml-4">
                 <figure class="w-10">
-                  <img :src="userImage" :alt="user.displayName" />
+                  <img :src="userImage" />
                 </figure>
               </button>
               <!-- This will be the content of the popover -->
@@ -97,7 +97,7 @@ export default {
     const store = useStore()
     const user = computed(() => store.state.user)
     const userImage = computed(() =>
-      require(`@/assets/images/users/${user.value.img}.png`)
+      require(`@/assets/images/users/${user.value?.img || 'user0'}.png`)
     )
     const handleClick = () => {
       store.dispatch('logout')

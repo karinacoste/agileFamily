@@ -3,6 +3,9 @@
 module.exports = {
   content: ['./public/**/*.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
+    fontFamily: {
+      sans: ['Poppins', 'Sans-serif'],
+    },
     extend: {
       colors: {
         primary: '#3FA7E1',
