@@ -64,7 +64,6 @@ export default {
         id: id,
         name: name.value,
         description: description.value,
-        state: 'todo',
         todo: [],
         progress: [],
         blocked: [],

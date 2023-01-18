@@ -83,7 +83,7 @@
       <!-- //////////////// -->
       <div class="w-1/5 px-5">
         <div
-          class="w-full py-2 bg-blue-500 text-center text-white font-semibold"
+          class="w-full py-2 bg-agileBlue text-center text-white font-semibold"
         >
           EN CURSO
         </div>
@@ -91,7 +91,7 @@
       <!-- //////////////// -->
       <div class="w-1/5 px-5">
         <div
-          class="w-full py-2 bg-red-500 text-center text-white font-semibold"
+          class="w-full py-2 bg-agileRed text-center text-white font-semibold"
         >
           BLOQUEADA
         </div>
@@ -99,7 +99,7 @@
       <!-- //////////////// -->
       <div class="w-1/5 px-5">
         <div
-          class="w-full py-2 bg-green-500 text-center text-white font-semibold"
+          class="w-full py-2 bg-agileGreen text-center text-white font-semibold"
         >
           HECHA
         </div>

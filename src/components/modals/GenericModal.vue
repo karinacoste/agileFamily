@@ -8,6 +8,7 @@
         @onSaveUser="saveUser"
         @onSaveObjective="saveObjective"
         @onSaveTask="saveTask"
+        @onSavePassword="savePassword"
         :modalData="modalData"
       />
     </keep-alive>
@@ -21,6 +22,7 @@ import ObjectiveForm from '@/components/forms/ObjectiveForm.vue'
 import TaskForm from '@/components/forms/TaskForm.vue'
 import UserForm from '@/components/forms/UserForm.vue'
 import NewUserForm from '@/components/forms/NewUserForm.vue'
+import ChangePassword from '@/components/forms/ChangePassword.vue'
 
 export default {
   components: {
@@ -28,6 +30,7 @@ export default {
     TaskForm,
     UserForm,
     NewUserForm,
+    ChangePassword,
   },
   props: {
     modalTitle: {
@@ -64,12 +67,16 @@ export default {
     function saveEditedProfile(payload) {
       context.emit('onSaveEditedProfile', payload)
     }
+    function savePassword() {
+      context.emit('onSavePassword')
+    }
     return {
       modalComponent,
       saveObjective,
       saveTask,
       saveUser,
       saveEditedProfile,
+      savePassword,
     }
   },
 }

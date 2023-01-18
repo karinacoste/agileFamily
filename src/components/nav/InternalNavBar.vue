@@ -7,6 +7,7 @@
           :componentName="modalComponent"
           :modalData="modalData"
           @onSaveEditedProfile="saveEditedProfile"
+          @onSavePassword="savePassword"
         ></generic-modal>
       </div>
     </Modal>
@@ -53,6 +54,7 @@
                     </li>
                     <li
                       class="my-1 flex items-center w-full hover:bg-slate-200 cursor-pointer px-4 py-2"
+                      @click="changePassword"
                     >
                       <span><lock-icon class="w-5 mr-2" /></span>
                       <span> Cambiar contraseña</span>
@@ -113,6 +115,10 @@ export default {
       showGenericModal('Editar perfil', 'userForm', user).value
       //  context.emit('onEditProfile')
     }
+    const changePassword = () => {
+      showGenericModal('Cambiar contraseña', 'changePassword', user).value
+      //  context.emit('onEditProfile')
+    }
     let modalTitle = ref('')
     let modalComponent = ref('')
     let modalData = ref({})
@@ -120,7 +126,10 @@ export default {
       await store.dispatch('updateUserProfile', userData)
       closeModal()
     }
-
+    function savePassword() {
+      console.log('Save Password')
+      closeModal()
+    }
     async function showGenericModal(title, component, data) {
       modalTitle.value = title
       modalComponent.value = component
@@ -131,9 +140,11 @@ export default {
     return {
       store,
       saveEditedProfile,
+      savePassword,
       handleClick,
       userImage,
       editProfile,
+      changePassword,
       showGenericModal,
       isShow,
       showModal,

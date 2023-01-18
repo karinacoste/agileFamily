@@ -75,14 +75,7 @@
 <script>
 import { v4 as uuidv4 } from 'uuid'
 import { getISOWeek } from 'date-fns'
-import {
-  ref,
-  computed,
-  watchEffect,
-  watch,
-  defineComponent,
-  defineAsyncComponent,
-} from 'vue'
+import { ref, computed } from 'vue'
 import CustomButton from '@/components/buttons/CustomButton.vue'
 import { useStore } from 'vuex'
 export default {

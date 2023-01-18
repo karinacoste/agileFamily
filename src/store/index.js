@@ -6,11 +6,14 @@ import router from '../router'
 import UsersTransformer from '@/transformers/UsersTransformer'
 import SprintsTransformer from '@/transformers/SprintsTransformer'
 import {
+  reauthenticateWithCredential,
+  updatePassword,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
   onAuthStateChanged,
   signOut,
+  EmailAuthProvider,
 } from 'firebase/auth'
 import {
   arrayUnion,
@@ -44,6 +47,7 @@ export default createStore({
     waiting: false,
   },
   getters: {},
+
   mutations: {
     setAllUsersInformation(state, payload) {
       state.allUsersInformations = payload
@@ -89,6 +93,20 @@ export default createStore({
     },
   },
   actions: {
+    async changePassword(context, { oldPassword, newPassword }) {
+      try {
+        const user = auth.currentUser
+        const credential = EmailAuthProvider.credential(user.email, oldPassword)
+        await reauthenticateWithCredential(user, credential)
+
+        try {
+          await updatePassword(user, newPassword)
+          console.log('update password from store')
+        } catch (error) {}
+      } catch (error) {
+        console.log('newPasswordError', error)
+      }
+    },
     async getPriorities(context) {
       try {
         const docRef = doc(db, 'sprintFeatures', 'priorities')
@@ -138,7 +156,6 @@ export default createStore({
     },
     async fetchUsersInformation(context) {
       const allUsersAccount = context.state.account.users
-      console.log('allUsersAccount', allUsersAccount)
       const usersInformation = []
       for (const user in allUsersAccount) {
         const oneUserInf = await context.dispatch(
@@ -155,13 +172,9 @@ export default createStore({
       const accountId = context.state.accountId || context.state.user.accountId
       const docRef = doc(db, 'accounts', accountId)
       const docSnap = await getDoc(docRef)
-
       if (docSnap.exists()) {
         context.commit('setAccount', docSnap.data())
-        console.log('Account', docSnap.data())
-        console.log('Account', context.state.accountId)
       } else {
-        // doc.data() will be undefined in this case
         console.log('No exite esa cuenta!')
       }
     },
@@ -309,7 +322,7 @@ export default createStore({
       // Se crea un nuevo usurio en auth de firebase
       const res = await createUserWithEmailAndPassword(auth, email, password)
       // Si no ha habido error se mutan (actualizan) los estados de authUser y currentUser para
-      // tener a mano la información del nuevo usurio
+      // tener a mano la información del nuevo usuario
       if (res) {
         const userId = auth.currentUser.uid
         context.commit('setAuthUser', auth.currentUser)
@@ -333,6 +346,7 @@ export default createStore({
         } else {
           const newAccountInfo = {
             users: [{ uid: userId, role: role }],
+            creationDate: new Date(),
           }
           try {
             // se crea una nueva cuenta con usurio administrador
