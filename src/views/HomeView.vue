@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full min-h-screen bg-gray-100">
+  <div class="w-full h-full min-h-screen min-w-fit bg-gray-100">
     <Modal v-model="isShow" :close="closeModal">
       <div class="modal w-3/6 p-12">
         <generic-modal
@@ -54,7 +54,7 @@
       </VDropdown>
     </div>
     <div class="w-full flex justify-between p-2 m-auto">
-      <div class="w-1/5 px-5">
+      <div class="md:w-1/5 w-72 px-5">
         <div
           class="w-full mt-0.5 pb-1 items-center justify-between flex font-bold border-b-4 border-gray-300"
         >
@@ -73,7 +73,7 @@
         </div>
       </div>
       <!-- //////////////// -->
-      <div class="w-1/5 px-5">
+      <div class="md:w-1/5 w-72 px-5">
         <div
           class="w-full py-2 bg-gray-500 text-center text-white font-semibold"
         >
@@ -81,7 +81,7 @@
         </div>
       </div>
       <!-- //////////////// -->
-      <div class="w-1/5 px-5">
+      <div class="md:w-1/5 w-72 px-5">
         <div
           class="w-full py-2 bg-agileBlue text-center text-white font-semibold"
         >
@@ -89,7 +89,7 @@
         </div>
       </div>
       <!-- //////////////// -->
-      <div class="w-1/5 px-5">
+      <div class="md:w-1/5 w-72 px-5">
         <div
           class="w-full py-2 bg-agileRed text-center text-white font-semibold"
         >
@@ -97,7 +97,7 @@
         </div>
       </div>
       <!-- //////////////// -->
-      <div class="w-1/5 px-5">
+      <div class="md:w-1/5 w-72 px-5">
         <div
           class="w-full py-2 bg-agileGreen text-center text-white font-semibold"
         >
@@ -158,12 +158,12 @@
               </button>
             </div>
           </div>
-          <div v-for="state in states" :key="state" class="w-1/5 px-5">
+          <div v-for="state in states" :key="state" class="md:w-1/5 w-72 px-5">
             <nested-draggable>
               <draggable
                 v-model="item[state]"
                 item-key="id"
-                class="w-full h-full"
+                class="h-full w-full"
                 group="my-group2"
               >
                 <template #item="{ element: nestedItem }"
