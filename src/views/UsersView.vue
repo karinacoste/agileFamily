@@ -23,6 +23,7 @@
 
     <div class="w-7/12 flex justify-center flex-col">
       <CustomButton
+        v-if="isCurrentUserAdmin"
         text="Añadir usuario"
         icon="PlusIcon"
         buttonClass="h-full flex ml-auto mt-4 px-6 py-2 flex items-center justify-center rounded-md bg-primary hover:bg-primaryDark text-white focus:outline-none"
@@ -91,6 +92,12 @@ export default defineComponent({
         console.log('usersInf Error', error)
       }
     }
+    const isCurrentUserAdmin = computed(() => {
+      const currentUser = allUsersInformations.value.filter(
+        (user) => user.uid === authUser.value.uid
+      )
+      return currentUser[0].role === 'admin' || false
+    })
     function saveUser(userEmail) {
       console.log('payload', userEmail)
       try {
@@ -133,6 +140,7 @@ export default defineComponent({
     }
 
     return {
+      isCurrentUserAdmin,
       saveUser,
       userImage,
       allUsersInformations,
