@@ -16,11 +16,6 @@
       <h1 class="text-2xl font-semibold ml-7 mt-5 mb-2">Usuarios</h1>
     </div>
 
-    <!-- <span
-      class="border border-primary w-24 h-9 rounded-md text-center pt-1 hover:text-primary"
-      ><router-link to="/LoginView">Login</router-link></span
-    > -->
-
     <div class="w-7/12 flex justify-center flex-col">
       <CustomButton
         v-if="isCurrentUserAdmin"
