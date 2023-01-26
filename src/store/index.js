@@ -292,8 +292,10 @@ export default createStore({
     async sendAnEmail(context, email) {
       console.log('email', email)
       const actionCodeSettings = {
-        url: 'https://karinacoste.github.io/kc-project/#/SignupView?accountId=${context.state.user.accountId}',
-        // `http://localhost:8080/#/SignupView?accountId=${context.state.user.accountId}`,
+        // url: 'https://karinacoste.github.io/kc-project/#/SignupView?accountId='+${context.state.user.accountId},
+        url:
+          'https://karinacoste.github.io/kc-project/#/SignupView?accountId=' +
+          context.state.user.accountId,
 
         // This must be true.
         handleCodeInApp: true,
