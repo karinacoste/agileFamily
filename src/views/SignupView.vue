@@ -1,8 +1,7 @@
 <template>
   <div
-    class="h-screen relative justify-center items-center flex flex-wrap-reverse"
+    class="min-h-screen relative justify-center items-center flex flex-wrap-reverse"
   >
-    <div v-if="error">{{ error }}</div>
     <div class="w-full md:w-3/5 flex justify-center items-center">
       <img
         src="../assets/images/familyImage-WhiteBg.png"
@@ -12,7 +11,7 @@
     <!-- <p>accountId: {{ accountIdFromFirebase }}</p> -->
 
     <div
-      class="w-full md:w-2/5 flex justify-center md:justify-start items-center mt-10 mt-14 md:mt-0"
+      class="w-full md:w-2/5 flex justify-center md:justify-start md:pl-12 items-center mt-14 md:mt-0"
     >
       <form @submit.prevent="handleSubmit">
         <div class="md:w-96 w-80">
@@ -65,6 +64,10 @@
             class="border w-full p-2 bg-white border-gray-600 text-gray-500 outline-none rounded-md mb-4"
           />
         </div>
+        <div v-if="error" class="text-red-700 font-semibold flex items-center">
+          <error-icon class="text-red-700 font-semibold w-6"></error-icon>
+          <span class="ml-2">{{ error }}</span>
+        </div>
         <!-- <label for="email">Password:</label>
       <input type="password" name="password" v-model="password" required /> -->
         <div class="py-4">
@@ -85,10 +88,12 @@ import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import InputField from '@/components/forms/commons/InputField.vue'
+import ErrorIcon from '@/components/icons/ErrorIcon.vue'
 
 export default {
   components: {
     InputField,
+    ErrorIcon,
   },
   data() {
     return {}
